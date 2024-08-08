@@ -18,6 +18,11 @@
       <label class="form-control-placeholder" for="password">Password</label>
       <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
     </div>
+    <div class="form-group mt-5">
+      <input id="password-confirm-field" type="password" name="password_confirm" class="form-control" required>
+      <label class="form-control-placeholder" for="password">Confirm Password</label>
+      <span toggle="#password-confirm-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+    </div>
     <div class="form-group">
       <button type="submit" class="form-control btn btn-primary rounded submit px-3">Sign In</button>
     </div>
@@ -33,6 +38,6 @@
       </div>
     </div>
   </form>
-  <p class="text-center">Not a member? <a data-toggle="tab" href="#signup">Sign Up</a></p>
+  <p class="text-center">Not a member? <a data-toggle="tab" href="{{url_for('sign_up_page')}}">Sign Up</a></p>
 </div>
 {% endblock %}
