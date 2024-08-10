@@ -10,6 +10,10 @@
   </div>
   <form method="POST" class="signin-form">
     <div class="form-group mt-3">
+      <input type="text" class="form-control" name='username' required>
+      <label class="form-control-placeholder" for="username">Username</label>
+    </div>
+    <div class="form-group mt-3">
       <input type="text" class="form-control" name='email' required>
       <label class="form-control-placeholder" for="email">E-mail</label>
     </div>
@@ -38,6 +42,6 @@
       </div>
     </div>
   </form>
-  <p class="text-center">Not a member? <a data-toggle="tab" href="{{url_for('sign_up_page')}}">Sign Up</a></p>
+  <p class="text-center">Already a member? <a data-toggle="tab" href="{{url_for('sign_in_page')}}">Sign in</a></p>
 </div>
 {% endblock %}
