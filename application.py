@@ -2,14 +2,18 @@ from flask import Flask, request, render_template, redirect, url_for
 from flask_login import login_user, login_required, logout_user, current_user, LoginManager
 from database import db, User, Burn
 from datetime import datetime, date
+from dotenv import load_dotenv
 import csv
+import os
 
-
+load_dotenv()
+if not os.getenv('TBT_DB_URI'):
+    raise RuntimeError('Missing environment variable: TBT_DB_URI')
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('TBT_DB_URI')
 
 db.init_app(app)
 with app.app_context():
