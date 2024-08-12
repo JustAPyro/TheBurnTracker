@@ -6,23 +6,26 @@ from dotenv import load_dotenv
 import csv
 import os
 
+# Load and check for all env variables we need
 load_dotenv()
+print(os.getenv('TBT_DB_URI'))
 if not os.getenv('TBT_DB_URI'):
     raise RuntimeError('Missing environment variable: TBT_DB_URI')
 
-
+# Configure the flask application object
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('TBT_DB_URI')
 
+# Initialize the database
 db.init_app(app)
 with app.app_context():
     db.create_all()
 
+# Define a login manager for the website
 login_manager = LoginManager()
 login_manager.login_view = 'sign_in_page'
 login_manager.init_app(app)
-
 @login_manager.user_loader
 def load_user(id):
     return db.session.query(User).filter_by(id=id).first()
@@ -43,10 +46,8 @@ def sign_in_page():
         user = db.session.query(User).filter_by(email=email).first()
 
         # Validate the user
-        if not user:
-            print('ERROR: Tried to log in an unfound user')
-        if not user.check_pass(password):
-            print('ERROR: Invalid password')
+        if not user or not user.check_pass(password):
+           return redirect(url_for('sign_in_page')) 
 
         login_user(user)
         user.last_login = datetime.now().astimezone()
