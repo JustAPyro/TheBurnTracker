@@ -30,7 +30,7 @@ login_manager.init_app(app)
 def load_user(id):
     return db.session.query(User).filter_by(id=id).first()
 
-
+# For now, no homepage so redirect to sign in
 @app.route('/')
 def home():
     return redirect(url_for('sign_in_page'))
@@ -49,13 +49,15 @@ def sign_in_page():
         if not user or not user.check_pass(password):
            return redirect(url_for('sign_in_page')) 
 
+        # log the user in and update their last login time
         login_user(user)
         user.last_login = datetime.now().astimezone()
         db.session.commit()
 
+        # Send them to their spinner page
         return redirect(url_for('spinner_page', spinner_username=user.username))
 
-    return render_template('auth/sign_in.html')
+    return render_template('auth/sign_in.html', request=request)
 
 @app.route('/sign-up.html', methods=['GET', 'POST'])
 def sign_up_page():
@@ -74,13 +76,16 @@ def sign_up_page():
         if password != password_confirm:
             print("ERROR: Tried to create account with mismatched password and password_confirm")
 
-        # Add to the database and commit
-        db.session.add(User(
-            username=username,
-            email=email,
-            password=User.hash_pass(password)
-        ))
+        # Create a user and add to database
+        user = User(username=username, email=email, password=User.hash_pass(password))
+        db.session.add(user)
         db.session.commit()
+
+        # Log in the user
+        login_user(user)
+
+        if request.args.get('next'):
+            return redirect(request.args.get('next'))
         return redirect(url_for('spinner_page', spinner_username=username))
 
     return render_template('auth/sign_up.html')
@@ -95,8 +100,6 @@ def spinner_page(spinner_username: str):
 
         if 'file' in request.files:
             file = request.files['file']
-            print(file)
-            print(typeof(file))
 
         # Collect the data from the form
         location = request.form.get('location')
@@ -112,7 +115,6 @@ def spinner_page(spinner_username: str):
         return redirect(url_for('spinner_page', spinner_username=spinner.username))
 
     burns = db.session.query(Burn).filter_by(user_id=spinner.id).all()
-    print(burns)
     return render_template('spinner.html', 
                            spinner=spinner,
                            last_location='' if len(spinner.burns) <= 0 else spinner.burns[-1].location,
