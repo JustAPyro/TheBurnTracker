@@ -72,12 +72,15 @@ def sign_up_page():
             password=User.hash_pass(password)
         ))
         db.session.commit()
+        return redirect(url_for('spinner_page', spinner_username=username))
 
     return render_template('auth/sign_up.html')
 
 @app.route('/spinner/<spinner_username>.html', methods=['GET', 'POST'])
 @login_required
 def spinner_page(spinner_username: str):
+
+    spinner = db.session.query(User).filter_by(username=spinner_username).first()
 
     if request.method == 'POST':
         # Collect the data from the form
@@ -87,16 +90,17 @@ def spinner_page(spinner_username: str):
         prop = request.form.get('prop')
    
         # Create the burn object
-        db.session.add(Burn(user_id=current_user.id, location=location, prop=prop,
+        db.session.add(Burn(user_id=spinner.id, location=location, prop=prop,
                             time=datetime(year=int(date[0:4]), month=int(date[5:7]), day=int(date[8:9]),
                                           hour=int(time[0:2]), minute=int(time[4:5]), second=int(time[6:7]))))
         db.session.commit() 
-        return redirect(url_for('spinner_page', spinner_username=current_user.username))
+        return redirect(url_for('spinner_page', spinner_username=spinner.username))
 
-        
-    burns = db.session.query(Burn).filter_by(user_id=current_user.id).all()
+    burns = db.session.query(Burn).filter_by(user_id=spinner.id).all()
+    print(burns)
     return render_template('spinner.html', 
-                           last_location='' if len(current_user.burns) <= 0 else current_user.burns[-1].location,
+                           spinner=spinner,
+                           last_location='' if len(spinner.burns) <= 0 else spinner.burns[-1].location,
                            date_today=datetime.now().strftime('%Y-%m-%d'),
                            time_now=datetime.now().strftime('%H:%M:%S'),
                            )
