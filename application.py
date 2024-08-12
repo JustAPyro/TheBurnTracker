@@ -2,6 +2,10 @@ from flask import Flask, request, render_template, redirect, url_for
 from flask_login import login_user, login_required, logout_user, current_user, LoginManager
 from database import db, User, Burn
 from datetime import datetime, date
+import csv
+
+
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret'
@@ -83,6 +87,12 @@ def spinner_page(spinner_username: str):
     spinner = db.session.query(User).filter_by(username=spinner_username).first()
 
     if request.method == 'POST':
+
+        if 'file' in request.files:
+            file = request.files['file']
+            print(file)
+            print(typeof(file))
+
         # Collect the data from the form
         location = request.form.get('location')
         date = request.form.get('date_today')

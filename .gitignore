@@ -1,4 +1,6 @@
+.env
 venv/
-instance/
+instance
+instance//
 __pycache__/
 
