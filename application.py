@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for 
+from flask import Flask, request, render_template, redirect, url_for, flash 
 from flask_login import login_user, login_required, logout_user, current_user, LoginManager
 from database import db, User, Burn
 from datetime import datetime, date
@@ -48,15 +48,16 @@ def sign_in_page():
 
         # Validate the user
         if not user or not user.check_pass(password):
-           return redirect(url_for('sign_in_page')) 
+            flash('Incorrect password, try again', category='error')
 
-        # log the user in and update their last login time
-        login_user(user)
-        user.last_login = datetime.now().astimezone()
-        db.session.commit()
+        else:
+            # log the user in and update their last login time
+            login_user(user)
+            user.last_login = datetime.now().astimezone()
+            db.session.commit()
 
-        # Send them to their spinner page
-        return redirect(url_for('spinner_page', spinner_username=user.username))
+            # Send them to their spinner page
+            return redirect(url_for('spinner_page', spinner_username=user.username))
 
     return render_template('auth/sign_in.html', request=request)
 
