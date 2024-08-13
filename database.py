@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 from sqlalchemy import ForeignKey, String
-from datetime import datetime
+from datetime import datetime, date
 from typing import List
 class Base(DeclarativeBase):
     pass
