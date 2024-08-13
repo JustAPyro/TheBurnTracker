@@ -105,6 +105,8 @@ def spinner_page(spinner_username: str):
 
     if request.method == 'POST':
 
+        if spinner_username != current_user.username:
+            return redirect(url_for('spinner_page', spinner_username=spinner_username))
         if 'file' in request.files:
             file = request.files['file']
 
