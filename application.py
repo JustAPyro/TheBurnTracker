@@ -107,7 +107,7 @@ def spinner_page(spinner_username: str):
         prop = request.form.get('prop')
    
         # Create the burn object
-        db.session.add(Burn(user_id=spinner.id, location=location, prop=prop, time=datetime(date)))
+        db.session.add(Burn(user_id=spinner.id, location=location, prop=prop, time=date(**date.split('-')))
         db.session.commit() 
         return redirect(url_for('spinner_page', spinner_username=spinner.username))
 

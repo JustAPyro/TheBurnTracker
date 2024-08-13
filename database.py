@@ -3,7 +3,7 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash 
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
-from sqlalchemy import ForeignKey, String
+from sqlalchemy import ForeignKey, String, Date
 from datetime import datetime, date
 from typing import List
 class Base(DeclarativeBase):
@@ -36,7 +36,7 @@ class Burn(Base):
     
     user_id: Mapped[int] = mapped_column(ForeignKey('user.id'))
     location: Mapped[str] = mapped_column(String(100))
-    time: Mapped[date] = mapped_column(server_default=func.now())
+    time: Mapped[date] = mapped_column()
     prop: Mapped[str] = mapped_column(String(100))
 
 db = SQLAlchemy(model_class=Base)
