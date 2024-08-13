@@ -36,7 +36,7 @@ class Burn(Base):
     
     user_id: Mapped[int] = mapped_column(ForeignKey('user.id'))
     location: Mapped[str] = mapped_column(String(100))
-    time: Mapped[datetime] = mapped_column(server_default=func.now())
+    time: Mapped[date] = mapped_column(server_default=func.now())
     prop: Mapped[str] = mapped_column(String(100))
 
 db = SQLAlchemy(model_class=Base)

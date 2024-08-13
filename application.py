@@ -104,13 +104,10 @@ def spinner_page(spinner_username: str):
         # Collect the data from the form
         location = request.form.get('location')
         date = request.form.get('date_today')
-        time = request.form.get('time_now')
         prop = request.form.get('prop')
    
         # Create the burn object
-        db.session.add(Burn(user_id=spinner.id, location=location, prop=prop,
-                            time=datetime(year=int(date[0:4]), month=int(date[5:7]), day=int(date[8:9]),
-                                          hour=int(time[0:2]), minute=int(time[4:5]), second=int(time[6:7]))))
+        db.session.add(Burn(user_id=spinner.id, location=location, prop=prop, time=datetime(date)))
         db.session.commit() 
         return redirect(url_for('spinner_page', spinner_username=spinner.username))
 
@@ -119,7 +116,6 @@ def spinner_page(spinner_username: str):
                            spinner=spinner,
                            last_location='' if len(spinner.burns) <= 0 else spinner.burns[-1].location,
                            date_today=datetime.now().strftime('%Y-%m-%d'),
-                           time_now=datetime.now().strftime('%H:%M:%S'),
                            )
 
 @app.route('/api/v1/burn.json')
