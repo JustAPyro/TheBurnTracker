@@ -32,12 +32,13 @@ def load_user(id):
 
 # For now, no homepage so redirect to sign in
 @app.route('/')
-def home():
+def home_page():
     return redirect(url_for('sign_in_page'))
 
 @app.route('/sign-in.html', methods=['GET', 'POST'])
 def sign_in_page():
     if request.method == 'POST':
+    
         # Collect the data from the form
         email = request.form.get('email').strip().lower()
         password = request.form.get('password')
@@ -90,6 +91,12 @@ def sign_up_page():
 
     return render_template('auth/sign_up.html')
 
+
+@app.route('/sign-out.html')
+def sign_out_page():
+    logout_user()
+    return redirect(url_for('home_page'))
+
 @app.route('/spinner/<spinner_username>.html', methods=['GET', 'POST'])
 @login_required
 def spinner_page(spinner_username: str):
@@ -116,6 +123,7 @@ def spinner_page(spinner_username: str):
                            spinner=spinner,
                            last_location='' if len(spinner.burns) <= 0 else spinner.burns[-1].location,
                            date_today=datetime.now().strftime('%Y-%m-%d'),
+                           current_user=current_user,
                            )
 
 @app.route('/api/v1/burn.json')
