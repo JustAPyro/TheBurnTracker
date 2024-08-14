@@ -129,7 +129,25 @@ def spinner_page(spinner_username: str):
                            current_user=current_user,
                            )
 
-@app.route('/api/v1/burn.json')
-def burn_api():
+@app.route('/burns/<burn_id>.html', methods=['DELETE'])
+@login_required
+def burn_pages(burn_id):
+
+    burn = db.session.query(Burn).filter_by(id=burn_id).first()
+
+    if request.method=='DELETE':
+        if current_user.id != burn.user_id:
+            return '404'
+        else:
+            db.session.query(Burn).filter_by(id=burn.id).delete()
+            db.session.commit()
+
+        
+
+
+@app.route('/api/v1/burn/{burn_id}.json', methods=['DELETE'])
+def burn_api(burn_id):
+    if request.method=='DELETE':
+        pass
     return 'oops'
 
