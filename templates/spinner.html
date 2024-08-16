@@ -3,7 +3,7 @@
 {% block content %}
 		<div class="container">
 			<div class="row justify-content-center">
-				<div class="col-md-7 col-lg-5">
+				<div class="col-md-7 col-lg-7">
 					<div class="wrap">
             <!--
               <div class="img" style="background-image: url({{url_for('static', filename='images/aswan.jpg')}});"></div>
@@ -23,6 +23,10 @@
         <div class="form-group">
           <label for="prop">Prop:</label>
           <input type="text" class="form-control" id="prop" name="prop" step="any">
+        </div>
+        <div class="form-group">
+          <label for="notes">Notes:</label>
+          <input type="text" class="form-control" id="notes" name="notes">
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
@@ -47,6 +51,7 @@
             <th scope="col">Location</th>
             <th scope="col">Time</th>
             <th scope="col">Prop</th>
+            <th scope="col">Notes</th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -56,7 +61,8 @@
             <td>{{burn.location}}</td>
             <td>{{burn.time}}</td>
             <td>{{burn.prop}}</td>
-            <td><button class="" onclick="delete_burn({{burn.id}}); window.location.reload();">Delete</button></td>
+            <td>{{burn.notes}}</td>
+            <td><button type="button" class="btn btn-secondary" onclick="delete_burn({{burn.id}}); window.location.reload();">Delete</button></td>
           </tr>
           {% endfor %}
         </tbody>

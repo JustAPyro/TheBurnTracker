@@ -38,5 +38,6 @@ class Burn(Base):
     location: Mapped[str] = mapped_column(String(100))
     time: Mapped[date] = mapped_column()
     prop: Mapped[str] = mapped_column(String(100))
+    notes: Mapped[str] = mapped_column(String(280), nullable=True)
 
 db = SQLAlchemy(model_class=Base)

@@ -109,15 +109,17 @@ def spinner_page(spinner_username: str):
         if spinner_username != current_user.username:
             return redirect(url_for('spinner_page', spinner_username=spinner_username))
         if 'file' in request.files:
+            print('parsing file')
             file = request.files['file']
 
         # Collect the data from the form
         location = request.form.get('location')
         burn_date = request.form.get('date_today').split('-')
         prop = request.form.get('prop')
+        notes = request.form.get('notes')
    
         # Create the burn object
-        db.session.add(Burn(user_id=spinner.id, location=location, prop=prop, time=date(int(burn_date[0]), int(burn_date[1]), int(burn_date[2]))))
+        db.session.add(Burn(user_id=spinner.id, location=location, prop=prop, notes=notes, time=date(int(burn_date[0]), int(burn_date[1]), int(burn_date[2]))))
         db.session.commit() 
         return redirect(url_for('spinner_page', spinner_username=spinner.username))
 
@@ -128,6 +130,27 @@ def spinner_page(spinner_username: str):
                            date_today=datetime.now().strftime('%Y-%m-%d'),
                            current_user=current_user,
                            )
+
+@app.route('/spinner/<spinner_username>/stats.html')
+@login_required
+def spinner_stats_page(spinner_username):
+
+    spinner = db.session.query(User).filter_by(username=spinner_username).first()
+ 
+    props = {}
+    total_burns = 0
+    for burn in spinner.burns:
+        total_burns += 1
+
+        if burn.prop not in props:
+            props[burn.prop] = 0
+        props[burn.prop] += 1
+
+
+
+    return render_template('spinner_stats.html', 
+                           total_burns=total_burns,
+                           prop_counts=props)
 
 @app.route('/burns/<burn_id>.html', methods=['DELETE'])
 @login_required
