@@ -17,6 +17,7 @@ if not os.getenv('TBT_DB_URI'):
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('TBT_DB_URI')
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 280}
 
 # Initialize the database
 db.init_app(app)
