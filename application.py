@@ -5,6 +5,7 @@ from datetime import datetime, date
 from dotenv import load_dotenv
 import csv
 import os
+import io
 
 # Load and check for all env variables we need
 load_dotenv()
@@ -109,8 +110,21 @@ def spinner_page(spinner_username: str):
         if spinner_username != current_user.username:
             return redirect(url_for('spinner_page', spinner_username=spinner_username))
         if 'file' in request.files:
-            print('parsing file')
             file = request.files['file']
+            if file and file.filename.endswith('.csv'):
+                file_content = file.stream.read().decode('utf-8')
+                reader = csv.reader(io.StringIO(file_content))
+                for location, time, prop, notes in reader:
+                    db.session.add(Burn(
+                        user_id=spinner.id,
+                        location=location,
+                        time=date.fromisoformat(time),
+                        prop=prop,
+                        notes=notes
+                    ))
+                    db.session.commit()
+
+            return redirect(url_for('spinner_page', spinner_username=spinner_username))
 
         # Collect the data from the form
         location = request.form.get('location')
