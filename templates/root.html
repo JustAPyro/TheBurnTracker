@@ -19,7 +19,8 @@
       <div class=centered>
         {% if current_user.is_authenticated %}
         <a href={{url_for('spinner_page', spinner_username=current_user.username)}}>My Log</a>
-        <a href={{url_for('spinner_stats_page', spinner_username=current_user.username)}}>Stats</a>
+        <a href={{url_for('spinner_stats_page', spinner_username=current_user.username)}}>Statistics</a>
+        <a href={{url_for('spinner_burns_csv', spinner_username=current_user.username)}}>Export Data</a>
         <a href={{url_for('sign_out_page')}}>Sign out ({{current_user.username}})</a>
         {% else %}
         <a href={{url_for('home_page')}}>Home</a>

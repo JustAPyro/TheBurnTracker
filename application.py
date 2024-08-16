@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for, flash 
+from flask import Flask, abort, request, render_template, make_response, redirect, url_for, flash, Blueprint 
 from flask_login import login_user, login_required, logout_user, current_user, LoginManager
 from database import db, User, Burn
 from datetime import datetime, date
@@ -178,13 +178,33 @@ def burn_pages(burn_id):
         else:
             db.session.query(Burn).filter_by(id=burn.id).delete()
             db.session.commit()
-
         
-
 
 @app.route('/api/v1/burn/{burn_id}.json', methods=['DELETE'])
 def burn_api(burn_id):
     if request.method=='DELETE':
         pass
     return 'oops'
+
+@app.route('/api/v1/spinner/<spinner_username>/burns.csv')
+@login_required
+def spinner_burns_csv(spinner_username):
+    
+    spinner = db.session.query(User).filter_by(username=spinner_username).first()
+
+    # If the spinner can't be found throw a 404 or is not the logged in user
+    if not spinner or spinner.username != current_user.username:
+        abort(404) 
+
+    # Write the header and then a line for each burn
+    csv_data = 'Location,Date,Prop,Notes\n'
+    for burn in spinner.burns:
+        csv_data += f'{burn.location},{burn.time},{burn.prop},{burn.notes}\n'
+
+    # Convert the data to a file-like object, set headers and return response
+    csv_file = io.BytesIO(csv_data.encode())
+    output = make_response(csv_file)
+    output.headers['Content-Disposition'] = f'attachment; filename={spinner.username}_burns_{date.today()}.csv'
+    output.headers['Content-type'] = 'text/csv'
+    return output
 
