@@ -3,6 +3,7 @@ from flask_login import login_user, login_required, logout_user, current_user, L
 from database import db, User, Burn
 from datetime import datetime, date
 from dotenv import load_dotenv
+import json
 import csv
 import os
 import io
@@ -146,7 +147,7 @@ def spinner_page(spinner_username: str):
                            current_user=current_user,
                            )
 
-@app.route('/spinner/<spinner_username>/stats.html')
+@app.route('/spinner/<spinner_username>/statistics.html')
 @login_required
 def spinner_stats_page(spinner_username):
 
@@ -161,11 +162,13 @@ def spinner_stats_page(spinner_username):
             props[burn.prop] = 0
         props[burn.prop] += 1
 
-
-
+    unique_props, prop_counts = zip(*props.items())        
+    unique_props = str(unique_props).replace('(', '[').replace(')', ']').replace('\'', '"')
+    prop_counts = str(prop_counts).replace('(', '[').replace(')', ']')
     return render_template('spinner_stats.html', 
                            total_burns=total_burns,
-                           prop_counts=props)
+                           unique_props=unique_props,
+                           prop_counts=prop_counts)
 
 @app.route('/burns/<burn_id>.html', methods=['DELETE'])
 @login_required
@@ -209,3 +212,31 @@ def spinner_burns_csv(spinner_username):
     output.headers['Content-type'] = 'text/csv'
     return output
 
+@app.route('/api/v1/spinner/<spinner_username>/burns.json')
+@login_required
+def spinner_burns_json(spinner_username):
+
+    spinner = db.session.query(User).filter_by(username=spinner_username).first()
+
+    if not spinner or spinner.username != current_user.username:
+        abort(404)
+
+    burns_dict = {}
+    for burn in spinner.burns:
+        if burn.location not in burns_dict:
+            burns_dict[burn.location] = {}
+            
+        if str(burn.time) not in burns_dict[burn.location]:
+            burns_dict[burn.location][str(burn.time)] = []
+
+        instance = {'prop': burn.prop}
+        if burn.notes:
+            instance['notes'] = burn.notes
+
+        burns_dict[burn.location][str(burn.time)].append(instance)
+
+    output = make_response(io.BytesIO(json.dumps(burns_dict, indent=4).encode()))
+    output.headers['Content-Disposition'] = f'attachment; filename={spinner.username}_burns_{date.today()}.csv'
+    output.headers['Content-type'] = 'text/json'
+    return output
+        
