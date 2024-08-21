@@ -3,6 +3,7 @@ from flask_login import login_user, login_required, logout_user, current_user, L
 from database import db, User, Burn
 from datetime import datetime, date
 from dotenv import load_dotenv
+from flasgger import Swagger
 import json
 import csv
 import os
@@ -19,6 +20,12 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('TBT_DB_URI')
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 280}
+
+# Initialize the swagger interface
+app.config['SWAGGER'] = {
+    'title': 'TheBurnTracker Public API'
+}
+swagger = Swagger(app)
 
 # Initialize the database
 db.init_app(app)
@@ -197,7 +204,34 @@ def burn_pages(burn_id):
 
 @app.route('/api/v1/burn/<burn_id>.json', methods=['PATCH', 'DELETE'])
 def burn_api(burn_id):
-    
+    """Example endpoint returning a list of colors by palette
+    This is using docstrings for specifications.
+    ---
+    parameters:
+      - name: palette
+        in: path
+        type: string
+        enum: ['all', 'rgb', 'cmyk']
+        required: true
+        default: all
+    definitions:
+      Palette:
+        type: object
+        properties:
+          palette_name:
+            type: array
+            items:
+              $ref: '#/definitions/Color'
+      Color:
+        type: string
+    responses:
+      200:
+        description: A list of colors (may be filtered by palette)
+        schema:
+          $ref: '#/definitions/Palette'
+        examples:
+          rgb: ['red', 'green', 'blue']
+    """ 
 
     burn = db.session.query(Burn).filter_by(id=burn_id).first()
     if not burn:
