@@ -146,6 +146,17 @@ def spinner_page(spinner_username: str):
                            date_today=datetime.now().strftime('%Y-%m-%d'),
                            current_user=current_user,
                            )
+@app.route('/burn/<burn_id>/edit.html')
+@login_required
+def edit_burn_page(burn_id: int):
+
+
+    burn = db.session.query(Burn).filter_by(id=burn_id).first()
+
+    if not burn:
+        abort(404)
+
+    return render_template('edit_burn.html', burn=burn)
 
 @app.route('/spinner/<spinner_username>/statistics.html')
 @login_required
@@ -184,10 +195,24 @@ def burn_pages(burn_id):
             db.session.commit()
         
 
-@app.route('/api/v1/burn/{burn_id}.json', methods=['DELETE'])
+@app.route('/api/v1/burn/<burn_id>.json', methods=['PATCH', 'DELETE'])
 def burn_api(burn_id):
+    
+
+    burn = db.session.query(Burn).filter_by(id=burn_id).first()
+    if not burn:
+        abort(404)
+
     if request.method=='DELETE':
         pass
+
+    if request.method == 'PATCH':
+        body = request.get_json()
+        for field in body.keys():
+            setattr(burn, field, body[field])
+
+    
+    db.session.commit()
     return 'oops'
 
 @app.route('/api/v1/spinner/<spinner_username>/burns.csv')

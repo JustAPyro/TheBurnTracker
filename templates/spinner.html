@@ -54,6 +54,7 @@
             <th scope="col">Prop</th>
             <th scope="col">Notes</th>
             <th scope="col"></th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
@@ -63,6 +64,7 @@
             <td>{{burn.time}}</td>
             <td>{{burn.prop}}</td>
             <td>{{burn.notes}}</td>
+            <td><button type="button" class="btn btn-secondary" onclick="window.location.href = '/burn/{{burn.id}}/edit.html';">Edit</button></td>
             <td><button type="button" class="btn btn-secondary" onclick="delete_burn({{burn.id}}); window.location.reload();">Delete</button></td>
           </tr>
           {% endfor %}
@@ -80,7 +82,6 @@
 {% block js %}
 <script>
 function delete_burn(id) {
-  console.log("hi");
   fetch('/burns/'+id+'.html', {
     method: 'DELETE'
   })

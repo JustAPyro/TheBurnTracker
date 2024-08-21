@@ -1,0 +1,53 @@
+{% extends "root.html" %}
+
+{% block content %}
+<div class="container">
+  <div class="card my-3">
+    <div class="card-body">
+      <form method="POST">
+        <div class="form-group">
+          <label for="location">Location:</label>
+          <input type="text" class="form-control" id="location" name="location" value="{{burn.location}}">
+        </div>
+        <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" class="form-control" id="date_today" name="date_today" value="{{burn.time}}" step="any">
+        </div>
+        <div class="form-group">
+          <label for="prop">Prop:</label>
+          <input type="text" class="form-control" id="prop" name="prop" step="any" value="{{burn.prop}}">
+        </div>
+        <div class="form-group">
+          <label for="notes">Notes:</label>
+          <input type="text" class="form-control" id="notes" name="notes" value="{{burn.notes}}">
+        </div>
+        <div>
+          <button type="button" class="btn btn-primary" onclick="patch_burn({{burn.id}})">Submit</button>
+          </div>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
+
+
+{% block js %}
+<script>
+async function patch_burn(id, redirect_to_user) {
+  new_prop = document.getElementById('prop').value
+
+  const response = await fetch('/api/v1/burn/'+id+'.json', {
+    method: 'PATCH',
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      prop: new_prop 
+    })
+  })
+  
+  window.location.href = '/spinner/{{current_user.username}}.html'
+}
+</script>
+{% endblock %}
+
