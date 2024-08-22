@@ -44,6 +44,8 @@ def load_user(id):
 # For now, no homepage so redirect to sign in
 @app.route('/')
 def home_page():
+    if current_user.is_authenticated:
+        return redirect(url_for('spinner_page', spinner_username=current_user.username))
     return redirect(url_for('sign_in_page'))
 
 @app.route('/sign-in.html', methods=['GET', 'POST'])
