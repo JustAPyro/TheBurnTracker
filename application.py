@@ -3,7 +3,8 @@ from flask_login import login_user, login_required, logout_user, current_user, L
 from database import db, User, Burn
 from datetime import datetime, date
 from dotenv import load_dotenv
-from flasgger import Swagger
+from flask_restful import Resource, Api
+from flasgger import Swagger, swag_from
 import json
 import csv
 import os
@@ -200,38 +201,9 @@ def burn_pages(burn_id):
         else:
             db.session.query(Burn).filter_by(id=burn.id).delete()
             db.session.commit()
-        
 
-@app.route('/api/v1/burn/<burn_id>.json', methods=['PATCH', 'DELETE'])
+@app.route('/api/v1/burn/<burn_id>.json', methods=['GET', 'POST', 'PATCH', 'DELETE'])
 def burn_api(burn_id):
-    """Example endpoint returning a list of colors by palette
-    This is using docstrings for specifications.
-    ---
-    parameters:
-      - name: palette
-        in: path
-        type: string
-        enum: ['all', 'rgb', 'cmyk']
-        required: true
-        default: all
-    definitions:
-      Palette:
-        type: object
-        properties:
-          palette_name:
-            type: array
-            items:
-              $ref: '#/definitions/Color'
-      Color:
-        type: string
-    responses:
-      200:
-        description: A list of colors (may be filtered by palette)
-        schema:
-          $ref: '#/definitions/Palette'
-        examples:
-          rgb: ['red', 'green', 'blue']
-    """ 
 
     burn = db.session.query(Burn).filter_by(id=burn_id).first()
     if not burn:
@@ -299,3 +271,332 @@ def spinner_burns_json(spinner_username):
     output.headers['Content-type'] = 'text/json'
     return output
         
+
+api = Api(app)
+
+specs_dict = {
+  "tags": ['Burn'],
+  "parameters": [
+    {
+      "name": "burn_id",
+      "in": "path",
+      "type": "int",
+      "required": "true",
+      "description": 'The database ID number for the burn.',
+    }
+  ],
+  "definitions": {
+    "Burn": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+        },
+        "time": {
+            'type': 'string'
+        },
+        "location": {
+            'type': 'string'
+        },
+        "prop": {
+            'type': 'string'
+        },
+        "notes": {
+                    "type": "string"
+                }
+      }
+    },
+  },
+  "responses": {
+    "200": {
+      "description": "Information about the Burn.",
+      "schema": {
+        "$ref": "#/definitions/Burn"
+      },
+      "examples": {
+        "rgb": [
+          "red",
+          "green",
+          "blue"
+        ]
+      }
+    },
+    "404": {
+        "description": "Burn not found in database.",
+        "schema": {
+                "name": "thing",
+                "type": "string",
+            }
+    }
+  }
+}
+
+class UserResource(Resource):
+    def get(self, user_id: int):
+        """
+          Allows access to user information.
+          Returns a representation of user.
+          ---
+        tags:
+          - User Resources
+        parameters:
+          - in: path
+            name: user_id
+            type: integer
+            required: true
+        responses:
+          200:
+            description: A single user item
+            schema:
+              id: User
+              properties:
+                id:
+                  type: integer
+                  description: The database ID of the user
+                  default: 1
+                username:
+                  type: string
+                  description: The display name of the user
+                  default: John Doe
+                email:
+                  type: string
+                  description: The email the user has signed up under
+                  default: jDoe@gmail.com
+                created_on:
+                  type: string
+                  description: The date the user signed up
+                  default: "10/10/1000"
+                last_login:
+                  type: string
+                  description: The last date the user logged in
+                  default: "10/20/2000"
+          404:
+            description: Could not find user with this id
+        """
+        users = db.session.query(User).filter_by(id=user_id).all()
+
+        if len(users) == 0:
+            abort(404)
+
+        user = users[0]
+
+        return {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+            'created_on': str(user.created_on),
+            'last_login': str(user.last_login)
+        }
+
+
+
+api.add_resource(UserResource, '/api/v2/user/<int:user_id>.json') 
+
+class BurnResource(Resource):
+    def get(self, burn_id: int):
+        """
+          Allows access to a user's burn information.
+          Returns a representation of a burn.
+          ---
+        tags:
+          - Burn Resources
+        parameters:
+          - in: path
+            name: burn_id
+            type: integer
+            required: true
+        responses:
+          200:
+            description: A single burn instance
+            schema:
+              id: Burn
+              properties:
+                id:
+                  type: integer
+                  description: The database ID of the burn
+                  default: 1
+                location:
+                  type: string
+                  description: The location the burn took place
+                  default: Albany Spinjam <3
+                time:
+                  type: string
+                  description: The date the burn occured
+                  default: 2024-08-22
+                prop:
+                  type: string
+                  description: The prop used
+                  default: "10/10/1000"
+                notes:
+                  type: string
+                  description: The last date the user logged in
+                  default: "10/20/2000"
+          404:
+            description: Could not find user with this id
+        """
+        burns = db.session.query(Burn).filter_by(id=burn_id).all()
+
+        if len(burns) != 1:
+            abort(404)
+
+        burn = burns[0]
+
+        return {
+            'location': burn.location,
+            'date': str(burn.time),
+            'prop': burn.prop,
+            'notes': burn.notes
+        }
+
+    def patch(self, burn_id: int):
+        """
+          Patch a specific burn 
+          This endpoint allows you to edit burns (modify in place)
+          ---
+        tags:
+          - Burn Resources
+        parameters:
+          - in: path
+            name: burn_id
+            type: integer
+            required: true
+        responses:
+          200:
+            description: The patched burn information
+            schema:
+              id: Burn
+              properties:
+                id:
+                  type: integer
+                  description: The database ID of the burn
+                  default: 1
+                location:
+                  type: string
+                  description: The location the burn took place
+                  default: Albany Spinjam <3
+                time:
+                  type: string
+                  description: The date the burn occured
+                  default: 2024-08-22
+                prop:
+                  type: string
+                  description: The prop used
+                  default: "10/10/1000"
+                notes:
+                  type: string
+                  description: The last date the user logged in
+                  default: "10/20/2000"
+          404:
+            description: Could not find user with this id
+        """
+        pass
+        
+
+    def delete(self, burn_id: int):
+        """
+          Delete a burn.
+          Allows you to remove burns from the database. This is permanant and CANNOT be undone without rolling back the database.
+          ---
+        tags:
+          - Burn Resources
+        parameters:
+          - in: path
+            name: burn_id
+            type: integer
+            required: true
+        responses:
+          200:
+            description: The deleted burn instance
+            schema:
+              id: Burn
+              properties:
+                id:
+                  type: integer
+                  description: The database ID of the burn
+                  default: 1
+                location:
+                  type: string
+                  description: The location the burn took place
+                  default: Albany Spinjam <3
+                time:
+                  type: string
+                  description: The date the burn occured
+                  default: 2024-08-22
+                prop:
+                  type: string
+                  description: The prop used
+                  default: "10/10/1000"
+                notes:
+                  type: string
+                  description: The last date the user logged in
+                  default: "10/20/2000"
+          404:
+            description: Could not find user with this id
+        """
+        pass
+
+class UnidentifiedBurnResource(Resource):
+    def post(self):
+        """
+          Allows you to create new burn instances.
+          Create a new burn.
+          ---
+        tags:
+          - Burn Resources
+        parameters:
+          - in: body
+            name: location
+            type: string
+            required: true
+            example: Albany Spinjam <3 
+          - in: body
+            name: prop
+            type: string
+            required: true
+            example: 4 Poi
+          - in: body
+            name: time
+            type: string
+            required: true
+            example: 2024-01-15
+          - in: body
+            name: notes 
+            type: string
+            required: false
+            example: "Spun with friends"
+        responses:
+          200:
+            description: A single burn instance
+            schema:
+              id: Burn
+              properties:
+                id:
+                  type: integer
+                  description: The database ID of the burn
+                  default: 1
+                location:
+                  type: string
+                  description: The location the burn took place
+                  default: Albany Spinjam <3
+                time:
+                  type: string
+                  description: The date the burn occured
+                  default: 2024-08-22
+                prop:
+                  type: string
+                  description: The prop used
+                  default: "10/10/1000"
+                notes:
+                  type: string
+                  description: The last date the user logged in
+                  default: "10/20/2000"
+          404:
+            description: Could not find user with this id
+        """
+    
+
+
+api.add_resource(UnidentifiedBurnResource, '/api/v2/burn.json') 
+api.add_resource(BurnResource, '/api/v2/burn/<int:burn_id>.json') 
+
+
