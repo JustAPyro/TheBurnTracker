@@ -35,6 +35,9 @@
 <script>
 async function patch_burn(id, redirect_to_user) {
   new_prop = document.getElementById('prop').value
+  new_location = document.getElementById('location').value
+  new_notes = document.getElementById('notes').value
+  new_date = document.getElementById('date_today').value
 
   const response = await fetch('/api/v1/burn/'+id+'.json', {
     method: 'PATCH',
@@ -42,7 +45,10 @@ async function patch_burn(id, redirect_to_user) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      prop: new_prop 
+      prop: new_prop,
+      location: new_location,
+      notes: new_notes,
+      time: new_date
     })
   })
   

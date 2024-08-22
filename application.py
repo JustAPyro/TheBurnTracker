@@ -217,6 +217,11 @@ def burn_api(burn_id):
     if request.method == 'PATCH':
         body = request.get_json()
         for field in body.keys():
+            print(field)
+            if field == 'time':
+                print(body.get('time'))
+                burn.time = date(*[int(x) for x in body.get('time').split('-')])
+                continue
             setattr(burn, field, body[field])
 
     
