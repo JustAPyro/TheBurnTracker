@@ -1,6 +1,7 @@
 from flask import Flask, abort, request, render_template, make_response, redirect, url_for, flash, Blueprint 
 from flask_login import login_user, login_required, logout_user, current_user, LoginManager
 from database import db, User, Burn
+from sqlalchemy import desc, asc
 from datetime import datetime, date
 from dotenv import load_dotenv
 from flask_restful import Resource, Api
@@ -175,21 +176,35 @@ def spinner_stats_page(spinner_username):
     spinner = db.session.query(User).filter_by(username=spinner_username).first()
  
     props = {}
+    locations = {}
     total_burns = 0
     for burn in spinner.burns:
         total_burns += 1
 
+        if burn.location not in locations:
+            locations[burn.location] = 0
+        locations[burn.location] += 1
+
         if burn.prop not in props:
             props[burn.prop] = 0
         props[burn.prop] += 1
+
+    burns = db.session.query(Burn).filter_by(user_id=spinner.id).order_by(asc(Burn.time)).all()
+
+    unique_locations, location_counts = zip(*locations.items())
+    unique_locations = str(unique_locations).replace('(','[').replace(')', ']')
+    location_counts = str(location_counts).replace('(', '[').replace(')', ']')
 
     unique_props, prop_counts = zip(*props.items())        
     unique_props = str(unique_props).replace('(', '[').replace(')', ']').replace('\'', '"')
     prop_counts = str(prop_counts).replace('(', '[').replace(')', ']')
     return render_template('spinner_stats.html', 
                            total_burns=total_burns,
+                           last_burn=str(burns[-1].time),
                            unique_props=unique_props,
-                           prop_counts=prop_counts)
+                           prop_counts=prop_counts,
+                           unique_locations=unique_locations,
+                           location_counts=location_counts)
 
 @app.route('/burns/<burn_id>.html', methods=['DELETE'])
 @login_required
