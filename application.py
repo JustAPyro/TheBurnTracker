@@ -127,15 +127,33 @@ def spinner_page(spinner_username: str):
             if file and file.filename.endswith('.csv'):
                 file_content = file.stream.read().decode('utf-8')
                 reader = csv.reader(io.StringIO(file_content))
-                for location, time, prop, notes in reader:
-                    db.session.add(Burn(
+                first_line_read = False
+                burns_created = []
+                line_number = 0
+                for line in reader:
+                    # If this line is a header, just ignore it and continue
+                    if line == ['Location','Date','Prop','Notes']:
+                        continue
+
+                    # If the line has the wrong number of elements, abort it and notify the user
+                    if len(line) != 4:
+                        flash(f'Error reading line {reader.line_num}, aborting upload', category='error')
+                        return render_template('spinner.html', spinner=spinner, request=request)
+
+                    
+                    location, time, prop, notes = line
+                    burns_created.append(Burn(
                         user_id=spinner.id,
                         location=location,
                         time=date.fromisoformat(time),
                         prop=prop,
                         notes=notes
                     ))
-                    db.session.commit()
+
+                for burn in burns_created:
+                    db.session.add(burn)
+                db.session.commit()
+                flash(f'Successfully uploaded {len(burns_created)} burns,', category='error')
 
             return redirect(url_for('spinner_page', spinner_username=spinner_username))
 
@@ -178,8 +196,15 @@ def spinner_stats_page(spinner_username):
     props = {}
     locations = {}
     total_burns = 0
+    date_list = {}
     for burn in spinner.burns:
         total_burns += 1
+
+        if burn.time not in date_list:
+            date_list[burn.time] = {}
+        if burn.prop not in date_list[burn.time]:
+            date_list[burn.time][burn.prop] = 0
+        date_list[burn.time][burn.prop] += 1
 
         if burn.location not in locations:
             locations[burn.location] = 0
@@ -190,6 +215,9 @@ def spinner_stats_page(spinner_username):
         props[burn.prop] += 1
 
     burns = db.session.query(Burn).filter_by(user_id=spinner.id).order_by(asc(Burn.time)).all()
+    counts = 0
+
+    dates = [str(x) for x in date_list.keys()]
 
     unique_locations, location_counts = zip(*locations.items())
     unique_locations = str(unique_locations).replace('(','[').replace(')', ']')
@@ -204,7 +232,9 @@ def spinner_stats_page(spinner_username):
                            unique_props=unique_props,
                            prop_counts=prop_counts,
                            unique_locations=unique_locations,
-                           location_counts=location_counts)
+                           location_counts=location_counts,
+                           all_dates=dates)
+
 
 @app.route('/burns/<burn_id>.html', methods=['DELETE'])
 @login_required
