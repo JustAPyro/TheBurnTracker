@@ -217,7 +217,7 @@ def spinner_stats_page(spinner_username):
     burns = db.session.query(Burn).filter_by(user_id=spinner.id).order_by(asc(Burn.time)).all()
     counts = 0
 
-    dates = [str(x) for x in date_list.keys()]
+    dates = [x for x in date_list.keys()]
 
     unique_locations, location_counts = zip(*locations.items())
     unique_locations = str(unique_locations).replace('(','[').replace(')', ']')
@@ -226,13 +226,34 @@ def spinner_stats_page(spinner_username):
     unique_props, prop_counts = zip(*props.items())        
     unique_props = str(unique_props).replace('(', '[').replace(')', ']').replace('\'', '"')
     prop_counts = str(prop_counts).replace('(', '[').replace(')', ']')
+    
+    poi_counts = [0]
+
+
+
+
+    prop_counts_over_time = {prop: [0] for prop in props.keys()}
+    for day in dates:
+        for prop in props.keys():
+            if prop in date_list[day]:
+                prop_counts_over_time[prop].append(prop_counts_over_time[prop][-1]+date_list[day][prop])
+            else:
+                prop_counts_over_time[prop].append(prop_counts_over_time[prop][-1])
+
+    dates = [str(x) for x in dates]
+
+
+
     return render_template('spinner_stats.html', 
                            total_burns=total_burns,
                            last_burn=str(burns[-1].time),
                            unique_props=unique_props,
+                           true_unique_props=props.keys(),
                            prop_counts=prop_counts,
                            unique_locations=unique_locations,
                            location_counts=location_counts,
+                           poi_count=prop_counts_over_time['2 Poi'],
+                           prop_counts_over_time=prop_counts_over_time,
                            all_dates=dates)
 
 

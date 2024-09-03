@@ -115,15 +115,15 @@ Total Burns: {{total_burns}}
     type: 'line',
     data: {
       labels: {{all_dates|safe}},
-      datasets: [{
-        label: 'Things',
-        data: {{prop_counts|safe}},
+      datasets: [
+      {% for prop in true_unique_props %}
+      {
+        label: '{{prop}}',
+        data: {{prop_counts_over_time[prop]|safe}},
         borderWidth: 1,
-      }, {
-        label: "Things2",
-        data: {{prop_counts|safe}},
-        borderWidth: 1,
-      }]
+      },
+      {% endfor %}
+      ]
     },
     options: {
       scales: {
