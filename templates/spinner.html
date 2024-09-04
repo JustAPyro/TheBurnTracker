@@ -1,5 +1,9 @@
 {% extends 'root.html' %}
 
+{% block includes %}
+<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+{% endblock %}
+
 {% block content %}
 		<div class="container">
 			<div class="row justify-content-center">
@@ -46,15 +50,15 @@
 
   <div class="card">
     <div class="card-body">
-      <table class="table">
+      <table class="table" id="burn_table">
         <thead>
           <tr>
             <th scope="col">Location</th>
-            <th scope="col">Date</th>
+            <th scope="col" data-sort="desc">Date</th>
             <th scope="col">Prop</th>
-            <th scope="col">Notes</th>
-            <th scope="col"></th>
-            <th scope="col"></th>
+            <th scope="col" data-sortable="false">Notes</th>
+            <th scope="col" data-sortable="false" data-searchable="delete"></th>
+            <th scope="col" data-sortable="false" data-searchable="delete"></th>
           </tr>
         </thead>
         <tbody>
@@ -80,7 +84,15 @@
 
 {% endblock %}
 {% block js %}
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
 <script>
+
+const dataTable = new simpleDatatables.DataTable("#burn_table", {
+	searchable: false,
+	fixedHeight: true,
+  paging: false,
+})
+
 function delete_burn(id) {
   fetch('/burns/'+id+'.html', {
     method: 'DELETE'
