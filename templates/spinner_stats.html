@@ -6,6 +6,12 @@
     <div class="col">
       <h1>{{current_user.username}}</h1>
     </div>
+    <div class="col">
+      <input type="date" id="startDate" onchange="filterDataOnDate()"/>
+    </div>
+    <div class="col">
+      <input type="date" id="endDate" onchange="filterDataOnDate()" />
+    </div>
     <div class="col-4">
       <h2 class="mt-1">Last burn: {{last_burn}}</h2>
     </div>
@@ -87,8 +93,6 @@ Total Burns: {{total_burns}}
       }
     }
   });
-</script>
-<script>
   const ctx2 = document.getElementById('myChart');
   new Chart(ctx2, {
     type: 'bar',
@@ -108,8 +112,6 @@ Total Burns: {{total_burns}}
       }
     }
   });
-</script>
-<script>
   const ctx3 = document.getElementById('propxtime');
   new Chart(ctx3, {
     type: 'line',
@@ -137,6 +139,18 @@ Total Burns: {{total_burns}}
     }
   });
 
+function filterDataOnDate() {
+  const dates = [...{{all_dates|safe}}]
+  const startDate = document.getElementById('startDate');
+  const endDate = document.getElementById('endDate');
+
+  // Get the index number in array
+  dates.sort()
+  const indexStartDate = dates.indexOf(startDate.value)
+  const indexEndDate = dates.indexOf(endDate.value)
+  console.log(indexStartDate);
+  console.log(dates);
+}
 </script>
 {% endblock %}
 

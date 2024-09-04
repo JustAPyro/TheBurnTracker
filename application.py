@@ -252,7 +252,6 @@ def spinner_stats_page(spinner_username):
                            prop_counts=prop_counts,
                            unique_locations=unique_locations,
                            location_counts=location_counts,
-                           poi_count=prop_counts_over_time['2 Poi'],
                            prop_counts_over_time=prop_counts_over_time,
                            all_dates=dates)
 
