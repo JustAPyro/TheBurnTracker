@@ -138,6 +138,7 @@ def forgot_password_page():
         ))
         db.session.commit()
 
+        # TODO: Stop this from being possible to spam and add a try/catch block
         from_addr = os.getenv('TBT_EMAIL_ADDRESS')
         to_addr = user.email
 
