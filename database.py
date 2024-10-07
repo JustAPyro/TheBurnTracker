@@ -39,5 +39,12 @@ class Burn(Base):
     time: Mapped[date] = mapped_column()
     prop: Mapped[str] = mapped_column(String(100))
     notes: Mapped[str] = mapped_column(String(280), nullable=True)
+    
+class PasswordReset(Base):
+    __tablename__ = 'links'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey('user.id'))
+    requested: Mapped[datetime] = mapped_column(server_default=func.now())
+    reset_code: Mapped[str] = mapped_column(String(100))
 
 db = SQLAlchemy(model_class=Base)

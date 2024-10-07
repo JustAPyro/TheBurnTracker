@@ -1,17 +1,23 @@
 from flask import Flask, abort, request, render_template, make_response, redirect, url_for, flash, Blueprint 
 from flask_login import login_user, login_required, logout_user, current_user, LoginManager
-from database import db, User, Burn
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from database import db, User, Burn, PasswordReset
 from sqlalchemy import desc, asc
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from dotenv import load_dotenv
 from flask_restful import Resource, Api
 from flasgger import Swagger, swag_from
+import smtplib
+import random
+import string
 import json
 import csv
 import os
 import io
 
 # Load and check for all env variables we need
+# # TODO ADJUST THIS
 load_dotenv()
 print(os.getenv('TBT_DB_URI'))
 if not os.getenv('TBT_DB_URI'):
@@ -112,9 +118,80 @@ def sign_out_page():
     logout_user()
     return redirect(url_for('home_page'))
 
-@app.route('/forgot-password.html')
+@app.route('/forgot-password.html', methods=['GET', 'POST'])
 def forgot_password_page():
+
+    if request.method == 'POST':
+        email = request.form.get('email').strip().lower()
+        user = db.session.query(User).filter_by(email=email).first()
+
+        # TODO: Consider if we should error for emails that don't exist
+        if not user:
+            flash('There is no user with this email in our database.', category='error')
+        
+        # Generate a code to reset this users password
+        random_code = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(24))
+        db.session.query(PasswordReset).filter_by(user_id=user.id).delete()
+        db.session.add(PasswordReset(
+            user_id=user.id,
+            reset_code=random_code
+        ))
+        db.session.commit()
+
+        from_addr = os.getenv('TBT_EMAIL_ADDRESS')
+        to_addr = user.email
+
+        # Set up the email headers
+        message = MIMEMultipart()
+        message['To'] = to_addr
+        message['From'] = from_addr
+        message['Subject'] = 'Your password reset link for TheBurnTracker' 
+
+        # Attach the email message
+        reset_url = os.getenv('TBT_BASE_URL') + url_for('reset_password_page', reset_code=random_code)
+        message_text = MIMEText(f'To reset your password go to this link: {reset_url}')
+        message.attach(message_text)
+
+        # Send the email
+        server = smtplib.SMTP('smtp.gmail.com:587')
+        server.ehlo('Gmail')
+        server.starttls()
+        server.login(
+            os.getenv('TBT_EMAIL_ADDRESS'),
+            os.getenv('TBT_EMAIL_PASSWORD')
+        )
+        server.sendmail(from_addr, [to_addr], message.as_string())
+        server.quit()
+
+        flash('We have emailed you a link to reset your password. This link is valid for 15 minutes.')
+
+
     return render_template('/auth/forgot.html')
+
+@app.route('/reset-password.html', methods=['GET', 'POST'])
+def reset_password_page():
+    # Try to get the password reset object for this reset code
+    pwdr = db.session.query(PasswordReset).filter_by(reset_code=request.args.get('reset_code')).first()
+    
+    if request.method == 'POST':
+        password = request.form.get('password')
+        password_confirm = request.form.get('password_confirm')
+
+
+        if password != password_confirm:
+            flash('Password does not match confirmation, please re-enter password and try again.', category='error')
+        elif not pwdr:
+            flash('Password reset code is invalid. Please use the "forgot password" button again.', category='error')
+        elif (datetime.utcnow() - pwdr.requested) > timedelta(minutes=15):
+            print(pwdr.requested - datetime.utcnow())
+            flash('Password reset code expired. Please use the "forgot password" button again.', category='error')
+        else:
+            user = db.session.query(User).filter_by(id=pwdr.user_id).first() 
+            user.password = User.hash_pass(password)
+            db.session.query(PasswordReset).filter_by(user_id=user.id).delete()
+            db.session.commit()
+            flash('Your password has been updated!', category='success')
+    return render_template('/auth/reset_password.html')
 
 @app.route('/spinner/<spinner_username>.html', methods=['GET', 'POST'])
 @login_required
