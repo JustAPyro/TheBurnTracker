@@ -44,6 +44,13 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
+          {% elif category == 'info' %}
+          <div class="alert alert-primary alert-dismissable fade show" role="alert">
+            {{message}}
+            <button type="button" class="close" data-bs-dismiss="alert">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
           {% endif %}
         {% endfor %}
       {% endif %}
