@@ -163,7 +163,7 @@ def forgot_password_page():
         server.sendmail(from_addr, [to_addr], message.as_string())
         server.quit()
 
-        flash('We have emailed you a link to reset your password. This link is valid for 15 minutes.')
+        flash('We have emailed you a link to reset your password. This link is valid for 15 minutes.', category='success')
 
 
     return render_template('/auth/forgot.html')
