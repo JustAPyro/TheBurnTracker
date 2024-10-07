@@ -112,6 +112,10 @@ def sign_out_page():
     logout_user()
     return redirect(url_for('home_page'))
 
+@app.route('/forgot-password.html')
+def forgot_password_page():
+    return render_template('/auth/forgot.html')
+
 @app.route('/spinner/<spinner_username>.html', methods=['GET', 'POST'])
 @login_required
 def spinner_page(spinner_username: str):
