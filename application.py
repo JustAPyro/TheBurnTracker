@@ -281,9 +281,11 @@ def spinner_profile_page(spinner_username: str):
     props = [burn.prop for burn in spinner.burns]
     most_common = Counter(props).most_common(1)
     
-    last_burn = spinner.burns[-1]
-    last_time = last_burn.time.strftime('%b %-d')
-    
+    if len(spinner.burns) > 0:
+        last_burn = spinner.burns[-1]
+        last_time = last_burn.time.strftime('%b %-d')
+    else:
+        last_time = 'N/A'
     activity_data = [burn.time.strftime("%Y-%m-%d") for burn in spinner.burns] 
 
     about = """

@@ -47,7 +47,7 @@ class Burn(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     
     user_id: Mapped[int] = mapped_column(ForeignKey('user.id'))
-    location: Mapped[str] = mapped_column(String(100))
+    location: Mapped[str] = mapped_column(String(100), nullable=True)
     time: Mapped[date] = mapped_column()
     prop: Mapped[str] = mapped_column(String(100))
     notes: Mapped[str] = mapped_column(String(280), nullable=True)
