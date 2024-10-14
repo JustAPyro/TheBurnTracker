@@ -1,0 +1,89 @@
+{% extends 'root.html' %}
+
+{% block includes %}
+<script
+	type="module"
+	src="https://cdn.jsdelivr.net/npm/@mariohamann/activity-graph/dist/activity-graph.min.js"
+></script>
+<link rel="stylesheet" href={{url_for('static', filename='profile.css')}}>
+{% endblock %}
+
+{% block content %}
+<section class="h-100 gradient-custom-2">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center">
+      <div class="col col-lg-9 col-xl-8">
+        <div class="card">
+          <div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:200px;">
+            <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
+              <img src="{{spinner.avatar(150)}}"
+                alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
+                style="width: 150px; z-index: 1">
+              <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark text-body" data-mdb-ripple-color="dark" style="z-index: 1;">
+                Edit profile
+              </button>
+            </div>
+            <div class="ms-3" style="margin-top: 130px;">
+              <h5>{{spinner.username}}</h5>
+              <p>{{spinner.location}}</p>
+            </div>
+          </div>
+          <div class="p-4 text-black bg-body-tertiary">
+            <div class="d-flex justify-content-end text-center py-1 text-body">
+              <div>
+                <p class="mb-1 h5">{{top_prop}}</p>
+                <p class="small text-muted mb-0">Top Prop</p>
+              </div>
+              <div class="px-5">
+                <p class="mb-1 h5">{{last_time}}</p>
+                <p class="small text-muted mb-0">Last burn</p>
+              </div>
+              <div>
+                <p class="mb-1 h5">{{total_burns}}</p>
+                <p class="small text-muted mb-0">Logged burns</p>
+              </div>
+          </div>
+          <div class="card-body p-4 text-black">
+            <div class="mb-5  text-body">
+              <p class="lead fw-normal mb-1">About</p>
+              <div class="p-4 bg-body-tertiary">
+                <p class="font-italic mb-1">{{about}}</p>
+              </div>
+            </div>
+
+            <!-- Burn statistics -->
+            <div class="mb-5 text-body">
+              <p class="lead fw-normal mb-1">Activity</p>
+              <div class="card-body p-0">
+                <activity-graph
+                    activity-data="{{activity_data|join(',')}}"
+                  activity-levels="1,2,3,4,5"
+                ></activity-graph>
+              </div>
+            </div>
+
+            <!-- Social Media Section -->
+            <div class="mb-5 text-body">
+              <p class="lead fw-normal mb-1">Social Media</p>
+              <div class="card-body p-0">
+                <ul class="list-group list-group-flush-rounded-3">
+                  <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                    <i class="fab fa-instagram fa-lg"></i>
+                    <p class="mb-0">@EntirelyLukaSpins</p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block js %}
+
+
+{% endblock %}

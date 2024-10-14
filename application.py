@@ -8,6 +8,7 @@ from datetime import datetime, date, timedelta
 from dotenv import load_dotenv
 from flask_restful import Resource, Api
 from flasgger import Swagger, swag_from
+from collections import Counter
 import smtplib
 import random
 import string
@@ -269,6 +270,35 @@ def edit_burn_page(burn_id: int):
 
     return render_template('edit_burn.html', burn=burn)
 
+
+@app.route('/spinner/<spinner_username>/profile.html')
+def spinner_profile_page(spinner_username: str):
+    spinner = db.session.query(User).filter_by(username=spinner_username).first()
+
+    if not spinner:
+        abort(404)
+
+    props = [burn.prop for burn in spinner.burns]
+    most_common = Counter(props).most_common(1)
+    
+    last_burn = spinner.burns[-1]
+    last_time = last_burn.time.strftime('%b %-d')
+    
+    activity_data = [burn.time.strftime("%Y-%m-%d") for burn in spinner.burns] 
+
+    about = """
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque volutpat orci non ullamcorper sodales. Sed elementum metus vitae aliquam faucibus. Nullam ac diam risus. Nunc feugiat, turpis id rutrum consequat, ex erat lobortis leo, in fermentum purus mi eu nulla. Nulla et laoreet dui. Nullam pharetra odio sed odio varius, sed lobortis nisl congue. 
+    """
+
+    return render_template('profile.html', 
+                           spinner=spinner,
+                           about=about,
+                           total_burns=len(spinner.burns),
+                           last_time=last_time,
+                           top_prop=most_common[0][0] if most_common else 'None',
+                           activity_data=activity_data,
+                           )
+
 @app.route('/spinner/<spinner_username>/statistics.html')
 @login_required
 def spinner_stats_page(spinner_username):
@@ -394,6 +424,7 @@ def spinner_burns_csv(spinner_username):
     output.headers['Content-Disposition'] = f'attachment; filename={spinner.username}_burns_{date.today()}.csv'
     output.headers['Content-type'] = 'text/csv'
     return output
+
 
 @app.route('/api/v1/spinner/<spinner_username>/burns.json')
 @login_required
