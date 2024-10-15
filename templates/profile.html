@@ -29,7 +29,7 @@
             </div>
           </div>
           <div class="p-4 text-black bg-body-tertiary">
-            <div class="d-flex justify-content-end text-center py-1 text-body">
+            <div class="d-flex justify-content-end text-center py0 text-body">
               <div>
                 <p class="mb-1 h5">{{top_prop}}</p>
                 <p class="small text-muted mb-0">Top Prop</p>
@@ -62,16 +62,16 @@
               </div>
             </div>
 
-            <!-- Social Media Section -->
-            <div class="mb-5 text-body">
-              <p class="lead fw-normal mb-1">Social Media</p>
-              <div class="card-body p-0">
-                <ul class="list-group list-group-flush-rounded-3">
-                  <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                    <i class="fab fa-instagram fa-lg"></i>
-                    <p class="mb-0">@EntirelyLukaSpins</p>
-                  </li>
-                </ul>
+            <!-- Prop Breakdown -->
+            <div class="mb-5">
+              <p class="lead fw-normal mb-1">Prop Breakdown</p>
+              <div class="card-body d-flex">
+                <div>
+                  <canvas id="prop_breakdown_chart"></canvas>
+                </div>
+                <div>
+                  <canvas id="prop_monthly_chart"></canvas>
+                </div>
               </div>
             </div>
 
@@ -84,6 +84,61 @@
 {% endblock %}
 
 {% block js %}
-
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx_pbc = document.getElementById('prop_breakdown_chart');
+  const data_pbc = {
+    labels: [
+      '4 Poi', '2 Poi', 'Doubles', 'Dragon'
+    ],
+    datasets: [{
+      label: 'Prop Breakdown',
+      data: [4, 13, 3, 5],
+    }]
+  };
+  new Chart(ctx_pbc, {
+    type: 'pie',
+    data: data_pbc
+  });
+</script>
+<script>
+  const ctx_pmc = document.getElementById('prop_monthly_chart');
+  const data_pmc = {
+    labels: [
+      '4 Poi', '2 Poi', 'Doubles', 'Dragon', 'Trifecta'
+    ],
+    datasets: [{
+      label: 'This Month', 
+      data: [2, 11, 1, 1, 1],
+      fill: true,
+      backgroundColor: 'rgba(255, 99, 132, 0.2)',
+      borderColor: 'rgb(255, 99, 132)',
+      pointBackgroundColor: 'rgb(255, 99, 132)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgb(255, 99, 132)'
+    }, {
+      label: 'Last Month',
+      data: [2, 2, 2, 4, 5],
+      fill: true,
+      backgroundColor: 'rgba(54, 162, 235, 0.2)',
+      borderColor: 'rgb(54, 162, 235)',
+      pointBackgroundColor: 'rgb(54, 162, 235)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgb(54, 162, 235)'
+    }]
+  };
+  new Chart(ctx_pmc, {
+    type: 'radar',
+    data: data_pmc,
+    options: {
+      elements: {
+        line: {
+          borderWidth: 3
+        }
+      }
+    }
+  });
+</script>
 {% endblock %}
