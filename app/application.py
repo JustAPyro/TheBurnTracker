@@ -68,11 +68,14 @@ def sign_up_page():
 
         # Check for registration issues
         if db.session.query(User).filter_by(username=username).first():
-            print("ERROR: Tried to create user with existing username.")
+            flash('Error: Tried to create user with existing username', category='error')
+            return render_template('auth/sign_up.html'), 403
         if db.session.query(User).filter_by(email=email).first():
-            print("ERROR: Tried to create user with existing email.")
+            flash('Error: Email already in use, please use a different email or use "Forgot Password"', category='error')
+            return render_template('auth/sign_up.html'), 403
         if password != password_confirm:
-            print("ERROR: Tried to create account with mismatched password and password_confirm")
+            flash('Error: Password confirmation field does not match password')
+            return render_template('auth/sign_up.html'), 403
 
         # Create a user and add to database
         user = User(username=username, email=email, password=User.hash_pass(password))
