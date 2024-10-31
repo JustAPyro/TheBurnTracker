@@ -17,12 +17,26 @@ import csv
 import os
 import io
 
+# Required environment variables to launch
+required_evars_and_descriptions = {
+    'TBT_DB_URI': 'The database uri- use sqlite:///filename for local',
+    'TBT_BASE_URL': 'The base URL that it is being hosted on. For local this is ip:port',
+    'TBT_EMAIL_ADDRESS': 'Google gmail address for emailing things',
+    'TBT_EMAIL_PASSWORD': 'Google gmail password token',
+}
+
 # Load and check for all env variables we need
-# # TODO ADJUST THIS
 load_dotenv()
-print(os.getenv('TBT_DB_URI'))
-if not os.getenv('TBT_DB_URI'):
-    raise RuntimeError('Missing environment variable: TBT_DB_URI')
+missing = []
+for env, desc in required_evars_and_descriptions.items():
+    if not os.getenv(env):
+        missing.append(env)
+
+if len(missing) != 0:
+    print(f'Aborting startup... Missing the following required environment variable{'s' if len(missing) > 1 else ''}:')
+    for env in missing:
+        print(f'{env}: {required_evars_and_descriptions.get(env)}')
+    exit()
 
 # Configure the flask application object
 app = Flask(__name__)
