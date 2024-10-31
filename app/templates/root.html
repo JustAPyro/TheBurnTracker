@@ -20,16 +20,16 @@
     <div class=top-nav>
       <div class=centered>
         {% if current_user.is_authenticated %}
-        <a href={{url_for('spinner_page', spinner_username=current_user.username)}}>My Log</a>
-        <a href={{url_for('spinner_stats_page', spinner_username=current_user.username)}}>Statistics</a>
-        <a href={{url_for('spinner_burns_csv', spinner_username=current_user.username)}}>Export Data</a>
+        <a href={{url_for('main.spinner_page', spinner_username=current_user.username)}}>My Log</a>
+        <a href={{url_for('main.spinner_stats_page', spinner_username=current_user.username)}}>Statistics</a>
+        <a href={{url_for('main.spinner_burns_csv', spinner_username=current_user.username)}}>Export Data</a>
         <a href='https://github.com/JustAPyro/TheBurnTracker/issues/new'>Report Bug</a>
-        <a href={{url_for('sign_out_page')}}>Sign out ({{current_user.username}})</a>
+        <a href={{url_for('main.sign_out_page')}}>Sign out ({{current_user.username}})</a>
         {% else %}
-        <a href={{url_for('home_page')}}>Home</a>
-        <a href={{url_for('sign_in_page')}}>Log in</a>
+        <a href={{url_for('main.home_page')}}>Home</a>
+        <a href={{url_for('main.sign_in_page')}}>Log in</a>
         <a href='https://github.com/JustAPyro/TheBurnTracker/issues/new'>Report Bug</a>
-        <a href={{url_for('sign_up_page')}}>Sign up</a>
+        <a href={{url_for('main.sign_up_page')}}>Sign up</a>
         {% endif %}
       </div>
     </div>
