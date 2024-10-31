@@ -7,6 +7,7 @@ from sqlalchemy import ForeignKey, String, Date
 from datetime import datetime, date
 import hashlib
 from typing import List
+
 class Base(DeclarativeBase):
     pass
 
@@ -59,4 +60,3 @@ class PasswordReset(Base):
     requested: Mapped[datetime] = mapped_column(server_default=func.now())
     reset_code: Mapped[str] = mapped_column(String(100))
 
-db = SQLAlchemy(model_class=Base)

@@ -28,11 +28,11 @@
         </label>
       </div>
       <div class="w-50 text-md-right">
-        <a href="{{url_for('forgot_password_page')}}">Forgot Password</a>
+        <a href="{{url_for('main.forgot_password_page')}}">Forgot Password</a>
       </div>
     </div>
   </form>
-  <p class="text-center">Not a member? <a data-toggle="tab" href="{{url_for('sign_up_page', next=request.args.get('next'))}}">Sign Up</a></p>
+  <p class="text-center">Not a member? <a data-toggle="tab" href="{{url_for('main.sign_up_page', next=request.args.get('next'))}}">Sign Up</a></p>
 </div>
 {% endblock %}
 

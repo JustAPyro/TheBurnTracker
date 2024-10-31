@@ -2,7 +2,7 @@ from flask import Flask, abort, request, render_template, make_response, redirec
 from flask_login import login_user, login_required, logout_user, current_user, LoginManager
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from database import db, User, Burn, PasswordReset
+from app.database import User, Burn, PasswordReset
 from sqlalchemy import desc, asc
 from datetime import datetime, date, timedelta
 from dotenv import load_dotenv
@@ -16,59 +16,20 @@ import json
 import csv
 import os
 import io
+from app import db
 
-# Required environment variables to launch
-required_evars_and_descriptions = {
-    'TBT_DB_URI': 'The database uri- use sqlite:///filename for local',
-    'TBT_BASE_URL': 'The base URL that it is being hosted on. For local this is ip:port',
-    'TBT_EMAIL_ADDRESS': 'Google gmail address for emailing things',
-    'TBT_EMAIL_PASSWORD': 'Google gmail password token',
-}
+from flask import Blueprint
+app = Blueprint('main', __name__)
 
-# Load and check for all env variables we need
-load_dotenv()
-missing = []
-for env, desc in required_evars_and_descriptions.items():
-    if not os.getenv(env):
-        missing.append(env)
 
-if len(missing) != 0:
-    print(f'Aborting startup... Missing the following required environment variable{'s' if len(missing) > 1 else ''}:')
-    for env in missing:
-        print(f'{env}: {required_evars_and_descriptions.get(env)}')
-    exit()
 
-# Configure the flask application object
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('TBT_DB_URI')
-app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 280}
-
-# Initialize the swagger interface
-app.config['SWAGGER'] = {
-    'title': 'TheBurnTracker Public API'
-}
-swagger = Swagger(app)
-
-# Initialize the database
-db.init_app(app)
-with app.app_context():
-    db.create_all()
-
-# Define a login manager for the website
-login_manager = LoginManager()
-login_manager.login_view = 'sign_in_page'
-login_manager.init_app(app)
-@login_manager.user_loader
-def load_user(id):
-    return db.session.query(User).filter_by(id=id).first()
 
 # For now, no homepage so redirect to sign in
 @app.route('/')
 def home_page():
     if current_user.is_authenticated:
-        return redirect(url_for('spinner_page', spinner_username=current_user.username))
-    return redirect(url_for('sign_in_page'))
+        return redirect(url_for('main.spinner_page', spinner_username=current_user.username))
+    return redirect(url_for('main.sign_in_page'))
 
 @app.route('/sign-in.html', methods=['GET', 'POST'])
 def sign_in_page():
@@ -92,7 +53,7 @@ def sign_in_page():
             db.session.commit()
 
             # Send them to their spinner page
-            return redirect(url_for('spinner_page', spinner_username=user.username))
+            return redirect(url_for('main.spinner_page', spinner_username=user.username))
 
     return render_template('auth/sign_in.html', request=request)
 
@@ -123,7 +84,7 @@ def sign_up_page():
 
         if request.args.get('next'):
             return redirect(request.args.get('next'))
-        return redirect(url_for('spinner_page', spinner_username=username))
+        return redirect(url_for('main.spinner_page', spinner_username=username))
 
     return render_template('auth/sign_up.html')
 
@@ -131,7 +92,7 @@ def sign_up_page():
 @app.route('/sign-out.html')
 def sign_out_page():
     logout_user()
-    return redirect(url_for('home_page'))
+    return redirect(url_for('main.home_page'))
 
 @app.route('/forgot-password.html', methods=['GET', 'POST'])
 def forgot_password_page():
