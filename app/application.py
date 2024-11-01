@@ -21,9 +21,6 @@ from app import db
 from flask import Blueprint
 app = Blueprint('main', __name__)
 
-
-
-
 # For now, no homepage so redirect to sign in
 @app.route('/')
 def home_page():
