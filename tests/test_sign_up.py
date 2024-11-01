@@ -34,6 +34,7 @@ def test_existing_email(client):
     assert(b'Error: Email already in use, please use a different email or use &#34;Forgot Password&#34;' in response.data)
     assert(response.status_code==403) 
 
+
 def test_existing_username(client):
     data={
         'username': 'test',
@@ -53,6 +54,29 @@ def test_existing_username(client):
 
     assert(b'Error: Tried to create user with existing username' in response.data)
     assert(response.status_code==403)
+
+
+def test_existing_username_case_insensitive(client):
+    data={
+        'username': 'test',
+        'email': 'dev@test.com',
+        'password': '12345678',
+        'password_confirm': '12345678'
+    }
+    client.post('/sign-up.html', data=data, follow_redirects=True)
+
+    data2={
+        'username': 'TEST',
+        'email': 'dev2@test.com',
+        'password': '12345678',
+        'password_confirm': '12345678'
+    }
+    response = client.post('/sign-up.html', data=data2, follow_redirects=True)
+
+    assert(b'Error: Tried to create user with existing username' in response.data)
+    assert(response.status_code==403)
+
+    
 
 def test_bad_password(client):
     data={

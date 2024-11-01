@@ -64,13 +64,13 @@ def status_page():
 def sign_up_page():
     if request.method == 'POST':
         # Collect data from the input fields
-        username = request.form.get('username').strip().lower()
+        username = request.form.get('username').strip()
         email = request.form.get('email').strip().lower()
         password = request.form.get('password')
         password_confirm = request.form.get('password_confirm')
 
         # Check for registration issues
-        if db.session.query(User).filter_by(username=username).first():
+        if db.session.query(User).filter(User.username.ilike(username)).first():
             flash('Error: Tried to create user with existing username', category='error')
             return render_template('auth/sign_up.html'), 403
         if db.session.query(User).filter_by(email=email).first():
