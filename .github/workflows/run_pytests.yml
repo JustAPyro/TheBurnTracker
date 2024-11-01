@@ -7,7 +7,12 @@ jobs:
     runs-on: ubuntu-latest  
     strategy:  
       matrix:  
-        python-version: ["3.10"]  
+        python-version: ["3.10"]
+    env:
+      TBT_DB_URI: 'sqlite://'
+      TBT_BASE_URL: ''
+      TBT_EMAIL_ADDRESS: ''
+      TBT_EMAIL_PASSWORD: ''
   
     steps:  
       - uses: actions/checkout@v3  
