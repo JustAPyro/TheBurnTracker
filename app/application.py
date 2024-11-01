@@ -179,7 +179,7 @@ def reset_password_page():
 @app.route('/pull_and_update', methods=['POST'])
 def github_webhook():
     if request.method == 'POST':
-        repo = git.Repo()
+        repo = git.Repo('tbt')
         origin = repo.remotes.origin
         origin.pull()
         return 'Update PythonAnywhere server succesfully', 200
