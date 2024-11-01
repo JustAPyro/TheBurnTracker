@@ -55,7 +55,7 @@ def sign_in_page():
 
     return render_template('auth/sign_in.html', request=request)
 
-@app.route('/status'), method=['GET']
+@app.route('/status', method=['GET'])
 def status_page():
     # Test
     return {200: 'Okay'}
