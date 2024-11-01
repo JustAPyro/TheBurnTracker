@@ -16,6 +16,7 @@ import json
 import csv
 import os
 import io
+import git
 from app import db
 
 from flask import Blueprint
@@ -169,6 +170,14 @@ def reset_password_page():
             db.session.commit()
             flash('Your password has been updated!', category='success')
     return render_template('/auth/reset_password.html')
+
+@app.route('/pull_and_update', methods=['POST'])
+def github_webhook():
+    if request.method != 'POST':
+        repo = git.Repo()
+        origin = repo.remotes.origin
+        origin.pull()
+        return 'Update PythonAnywhere server succesfully', 200
 
 @app.route('/spinner/<spinner_username>.html', methods=['GET', 'POST'])
 @login_required
