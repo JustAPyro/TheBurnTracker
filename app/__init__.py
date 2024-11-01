@@ -22,7 +22,7 @@ for env, desc in required_evars_and_descriptions.items():
         missing.append(env)
 
 if len(missing) != 0:
-    print(f'Aborting startup... Missing the following required environment variable{'s' if len(missing) > 1 else ''}:')
+    print(f'Aborting startup... Missing the following required environment variable{"s" if len(missing) > 1 else ""}:')
     for env in missing:
         print(f'{env}: {required_evars_and_descriptions.get(env)}')
     exit()
