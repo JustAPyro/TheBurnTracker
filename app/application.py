@@ -57,6 +57,7 @@ def sign_in_page():
 
 @app.route('/status'), method=['GET']
 def status_page():
+    # Test
     return {200: 'Okay'}
 
 @app.route('/sign-up.html', methods=['GET', 'POST'])
