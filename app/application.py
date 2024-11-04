@@ -43,6 +43,7 @@ def sign_in_page():
         # Validate the user
         if not user or not user.check_pass(password):
             flash('Incorrect password, try again', category='error')
+            return render_template('auth/sign_in.html', request=request), 401
 
         else:
             # log the user in and update their last login time
@@ -54,11 +55,6 @@ def sign_in_page():
             return redirect(url_for('main.spinner_page', spinner_username=user.username))
 
     return render_template('auth/sign_in.html', request=request)
-
-@app.route('/status', methods=['GET'])
-def status_page():
-    # Test
-    return '200: Final Test'
 
 @app.route('/sign-up.html', methods=['GET', 'POST'])
 def sign_up_page():
