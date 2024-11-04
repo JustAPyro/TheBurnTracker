@@ -218,7 +218,7 @@ def spinner_page(spinner_username: str):
                         user_id=spinner.id,
                         location=location,
                         time=date.fromisoformat(time),
-                        prop=prop,
+                        prop=prop.strip(),
                         notes=notes
                     ))
 
