@@ -22,7 +22,7 @@
         </div>
         <div class="form-group">
             <label for="date">Date:</label>
-            <input type="date" class="form-control" id="date_today" name="date_today" value="{{date_today}}" step="any">
+            <input type="date" class="form-control" id="date_today" name="date_today" step="any">
         </div>
         <div class="form-group">
           <label for="prop">Prop:</label>
@@ -98,5 +98,20 @@ function delete_burn(id) {
     method: 'DELETE'
   })
 }
+
+function getCurrentDateInTimezone() {
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const now = new Date();
+
+    const formattedDate = new Intl.DateTimeFormat('en-CA', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        timeZone: timeZone,
+    }).format(now);
+
+    return formattedDate; // This will output in "YYYY-MM-DD" format
+}
+document.getElementById('date_today').value = getCurrentDateInTimezone()
 </script>
 {% endblock %}
