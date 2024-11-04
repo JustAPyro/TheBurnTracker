@@ -1,0 +1,83 @@
+{% extends "root.html" %}
+
+{% block title %}Log Burn{% endblock %}
+
+{% block content %}
+<style>
+  .btn-toggle.active {
+    background-color: #007bff;
+    color: white;
+  }
+
+</style>
+<form method="post">
+  <div class="card m-2">
+    <div class="card-body p-2">
+      <div class="d-flex flex-row">
+          <label for="burn_date" class="col-form-label mx-2">Date:</label>
+          <input type="date" class="form-control ms-1" id="burn_date" name="burn_date" step="any">
+      </div>
+    </div>
+  </div>
+  <div class="card m-2">
+    <div class="card-body p-2">
+      <div class="d-flex flex-row">
+        <label for="burn_location" class="col-form-label mx-2">Location:</label>
+        <input type="text" class="form-control ms-1" id="burn_location" name="burn_location" value="{{ current_user.burns[-1].location if current_user.burns else ''}}">
+      </div>
+    </div>
+  </div>
+  <div class="card m-2">
+    <div class="card-body p-2">
+      <div class="d-flex flex-row">
+        <label for="burn_prop" class="col-form-label mx-2">Prop:</label>
+        <input type="text" class="form-control ms-1" id="burn_prop" name="burn_prop" value="">
+      </div>
+    </div>
+    {% if current_user.burns %}
+    <div class="card-body border-top prop_quick_pick" style="height: 200px;">
+      <div class="row">
+        <div class="col">
+          <button class="btn btn-toggle" style="btn" data-bs-toggle="button" aria-pressed="false">Poi</button>
+        </div>
+        <div class="col">
+        </div>
+        <div class="col">
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+  <div class="card m-2">
+    <div class="card-body p-2">
+      <div class="d-flex flex-row">
+        <label for="burn_notes" class="col-form-label mx-2">Notes:</label>
+        <input type="text" class="form-control ms-1" id="burn_notes" name="burn_notes" value="">
+      </div>
+    </div>
+  </div>
+  <div class="m-2">
+    <button type="submit" class="btn btn-primary btn-lg w-100">Submit</input>
+  </div>
+</form>
+{% endblock %}
+
+{% block js %}
+<script>
+function getCurrentDateInTimezone() {
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const now = new Date();
+
+    const formattedDate = new Intl.DateTimeFormat('en-CA', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        timeZone: timeZone,
+    }).format(now);
+
+    return formattedDate; // This will output in "YYYY-MM-DD" format
+}
+document.getElementById('burn_date').value = getCurrentDateInTimezone()
+</script>
+{% endblock %}
+

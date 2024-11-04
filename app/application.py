@@ -95,6 +95,47 @@ def sign_up_page():
     return render_template('auth/sign_up.html')
 
 
+
+@app.route('/logger.html', methods=['GET', 'POST'])
+@login_required
+def spinner_logger_page():
+
+    if request.method == 'POST':
+
+        # Get the location and abort with 400 if it's empty or just whitespace
+        burn_location = request.form.get('burn_location').strip()
+        if burn_location == '':
+            flash('Invalid Location: Please enter a location', category='error')
+            return render_template('spinner/logger.html'), 400
+
+        # Get the date and abort with 400 if it's a future date
+        burn_date = datetime.strptime(request.form.get('burn_date'), "%Y-%m-%d").date()
+        if burn_date > date.today():
+            flash('Invalid Date: Please enter a date that is today or in the past', category='error')
+            return render_template('spinner/logger.html'), 400
+    
+        # Get the prop and abort with 400 if it's empty or whitespace
+        burn_prop = request.form.get('burn_prop').strip()
+        if burn_prop == '':
+            flash('Invalid Prop: Please enter a prop', category='error')
+            return render_template('spinner/logger.html'), 400
+
+        # Otherwise, we are good to go ahead and create the burn objects
+        db.session.add(Burn(
+            user_id=current_user.id, 
+            location=burn_location,
+            prop=burn_prop, 
+            notes=request.form.get('burn_notes'), 
+            time=burn_date))
+        db.session.commit()
+        flash('Burn Logged', category='success')
+
+
+
+
+
+    return render_template('spinner/logger.html')
+
 @app.route('/sign-out.html')
 def sign_out_page():
     logout_user()

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="100"
+   height="100"
+   viewBox="0 0 26.458333 26.458333"
+   version="1.1"
+   id="svg3719"
+   enable-background="new"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   sodipodi:docname="poi_icon_v1.svg">
+  <defs
+     id="defs3713" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="6.980409"
+     inkscape:cx="84.531319"
+     inkscape:cy="37.850132"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer3"
+     showgrid="false"
+     units="px"
+     inkscape:snap-global="false"
+     inkscape:object-paths="true"
+     inkscape:snap-intersection-paths="true"
+     inkscape:window-width="2560"
+     inkscape:window-height="1013"
+     inkscape:window-x="2391"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata3716">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-270.54167)"
+     style="display:none"
+     sodipodi:insensitive="true">
+    <image
+       sodipodi:absref="C:\Users\lukem\Desktop\poi ref.png"
+       xlink:href="poi ref.png"
+       width="30.622114"
+       height="17.96755"
+       preserveAspectRatio="none"
+       id="image3763"
+       x="-7.6290998"
+       y="266.0434" />
+    <circle
+       id="path3774"
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.08110474;stroke-opacity:1"
+       cx="13.269719"
+       cy="283.73029"
+       r="13.229167" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Poi 1"
+     style="display:inline" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Poi 2"
+     style="display:inline">
+    <ellipse
+       style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.83636826;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path6048"
+       cx="8.2159767"
+       cy="21.414429"
+       rx="2.5739989"
+       ry="2.4930441" />
+    <path
+       style="display:inline;fill:none;stroke:#000000;stroke-width:0.44619322;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 10.460877,20.194712 c 0,0 2.470577,-0.704069 4.558583,-0.979791 4.759311,-0.628472 8.003577,1.749983 9.413143,-0.551411 1.409566,-2.301392 -1.151243,-4.248656 -1.151243,-4.248656"
+       id="path6050"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cssc" />
+    <ellipse
+       style="display:inline;fill:none;fill-opacity:1;stroke:#190000;stroke-width:0.44630417;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path6052"
+       cx="22.584145"
+       cy="13.757758"
+       rx="0.97282112"
+       ry="0.94222492" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11.80552864px;line-height:1.25;font-family:roberto;-inkscape-font-specification:roberto;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.29513821"
+       x="3.8824749"
+       y="17.881609"
+       id="text6092"
+       transform="scale(1.0161064,0.98414888)"><tspan
+         sodipodi:role="line"
+         id="tspan6090"
+         x="3.8824749"
+         y="17.881609"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Open Sans';-inkscape-font-specification:'Open Sans';stroke-width:0.29513821">Poi</tspan></text>
+    <ellipse
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.83709872;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path6055"
+       cx="18.348116"
+       cy="5.3928838"
+       rx="2.5736277"
+       ry="2.4926846" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.44619322;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 17.220826,7.6337254 c 0,0 -1.33331,2.0765295 -5.441187,0.789309 C 7.4247048,7.0583981 3.7224018,5.91885 2.393383,7.4401096 0.45187767,9.6624526 2.6100491,11.523362 2.6100491,11.523362"
+       id="path6057"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cssc" />
+    <ellipse
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.44619322;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path6059"
+       cx="3.2054312"
+       cy="12.153382"
+       rx="0.88181722"
+       ry="0.85408318" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="Button" />
+</svg>
