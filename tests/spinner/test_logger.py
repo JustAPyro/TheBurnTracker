@@ -162,7 +162,7 @@ def test_popultes_quick_prop_one(auth_client):
     sub_response = auth_client.post('/logger.html', follow_redirects=True, data={
         'burn_date': str(date.today()),
         'burn_location': 'Anywhere',
-        'burn_prop': 'Poi',
+        'burn_prop': 'UniquePoi',
         'burn_notes': '',
     })
     assert(sub_response.status_code == 200)
@@ -173,7 +173,7 @@ def test_popultes_quick_prop_one(auth_client):
     # Verify
     assert(response.status_code == 200)
     assert(b'prop_quick_pick' in response.data)
-    # TODO Add assert for the correct prop here
+    assert(b'UniquePoi' in response.data)
 
 
     
