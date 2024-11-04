@@ -11,4 +11,5 @@ class Actions:
             'password_confirm': password
         }
         response_sign_up = self.client.post('/sign-up.html', data=payload, follow_redirects=True)
+        return username
         
