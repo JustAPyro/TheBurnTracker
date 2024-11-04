@@ -227,7 +227,7 @@ def spinner_page(spinner_username: str):
                 db.session.commit()
                 flash(f'Successfully uploaded {len(burns_created)} burns,', category='error')
 
-            return redirect(url_for('spinner_page', spinner_username=spinner_username))
+            return redirect(url_for('main.spinner_page', spinner_username=spinner_username))
 
         # Collect the data from the form
         location = request.form.get('location')
