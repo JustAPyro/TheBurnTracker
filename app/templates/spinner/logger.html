@@ -4,10 +4,15 @@
 
 {% block content %}
 <style>
-  .btn-toggle.active {
-    background-color: #007bff;
-    color: white;
+
+  .quick-prop-button {
+
   }
+
+  .square {
+    aspect-ratio: 1 / 1;
+  }
+
 
 </style>
 <form method="post">
@@ -34,17 +39,25 @@
         <input type="text" class="form-control ms-1" id="burn_prop" name="burn_prop" value="">
       </div>
     </div>
-    {% if current_user.burns %}
-    <div class="card-body border-top prop_quick_pick" style="height: 200px;">
+    {% if quick_props and quick_props|length > 0 %}
+    <div class="card-body border-top pt-1 prop_quick_pick" aria-label="Toggle buttons">
+      {% set rows = quick_props|length // 3 + (1 if quick_props|length % 3 > 0 else 0) %}
+      {% for row in range(rows) %}
       <div class="row">
-        <div class="col">
-          <button class="btn btn-toggle" style="btn" data-bs-toggle="button" aria-pressed="false">Poi</button>
-        </div>
-        <div class="col">
-        </div>
-        <div class="col">
-        </div>
+        {% for col in range(3) %}
+          {% set index = row * 3 + col %}
+          {% if index < quick_props|length %}
+          <div class="col square p-1 d-flex align-items-center justify-content-center" onclick="clickQuickProp('{{quick_props[index]}}')">
+            <input type="checkbox" class="btn-check" id="quick_prop" autocomplete="off">
+            <label class="btn btn-outline-primary w-100 h-100 d-flex align-items-center justify-content-center" for="btn-check">{{quick_props[index]}}</label>
+          </div>
+          {% else %}
+          <div class="col square p-1 d-flex align-items-center justify-content-center">
+          </div>
+          {% endif %}
+        {% endfor %}
       </div>
+      {% endfor %}
     </div>
     {% endif %}
   </div>
@@ -56,6 +69,11 @@
       </div>
     </div>
   </div>
+  {% if current_user.burns %}
+  <div class="m-3">
+    <p>Last burn logged ({{current_user.burns[-1].time}}):<br>{{current_user.burns[-1].prop}} at {{current_user.burns[-1].location}}</p>
+  </div>
+  {% endif %}
   <div class="m-2">
     <button type="submit" class="btn btn-primary btn-lg w-100">Submit</input>
   </div>
@@ -63,6 +81,12 @@
 {% endblock %}
 
 {% block js %}
+<script>
+  function clickQuickProp(prop) {
+    const prop_field = document.getElementById("burn_prop");
+    prop_field.value = prop;
+  }
+</script>
 <script>
 function getCurrentDateInTimezone() {
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;

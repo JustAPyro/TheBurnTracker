@@ -172,7 +172,7 @@ def test_popultes_quick_prop_one(auth_client):
 
     # Verify
     assert(response.status_code == 200)
-    assert(b'<div class="card-body border-top prop_quick_pick"' in response.data)
+    assert(b'prop_quick_pick' in response.data)
     # TODO Add assert for the correct prop here
 
 
