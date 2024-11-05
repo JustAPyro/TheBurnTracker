@@ -23,11 +23,17 @@
       <button type="submit" class="form-control btn btn-primary rounded submit px-3">Log In</button>
     </div>
     <div class="form-group d-md-flex">
+      <!--
       <div class="w-50 text-left">
         <label class="checkbox-wrap checkbox-primary mb-0">Remember Me
-          <input type="checkbox" checked>
+          <input type="checkbox" style="line-height=2;" checked>
           <span class="checkmark"></span>
         </label>
+      </div>
+      -->
+      <div class="form-check w-50 text-left">
+        <input type="checkbox" class="form-check-input" id="rememberMe" checked>
+        <label class="form-check-label mb-0" for="rememberMe">Remember Me</label>
       </div>
       <div class="w-50 text-md-right">
         <a href="{{url_for('main.forgot_password_page')}}">Forgot Password</a>

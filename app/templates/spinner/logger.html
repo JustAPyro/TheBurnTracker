@@ -13,6 +13,12 @@
     aspect-ratio: 1 / 1;
   }
 
+  .luka-overflow {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+  }
 
 </style>
 <form method="post">
@@ -49,7 +55,7 @@
           {% if index < quick_props|length %}
           <div class="col square p-1 d-flex align-items-center justify-content-center" onclick="clickQuickProp('{{quick_props[index]}}')">
             <input type="checkbox" class="btn-check" id="quick_prop" autocomplete="off">
-            <label class="btn btn-outline-primary w-100 h-100 d-flex align-items-center justify-content-center" for="btn-check">{{quick_props[index]}}</label>
+            <label class="btn btn-outline-primary w-100 h-100 d-flex align-items-center justify-content-center luka-overflow" for="btn-check">{{quick_props[index]}}</label>
           </div>
           {% else %}
           <div class="col square p-1 d-flex align-items-center justify-content-center">
