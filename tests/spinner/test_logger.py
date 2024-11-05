@@ -175,7 +175,54 @@ def test_popultes_quick_prop_one(auth_client):
     assert(b'prop_quick_pick' in response.data)
     assert(b'UniquePoi' in response.data)
 
+def test_populates_last_burn(auth_client):
+    # Set up - post a burn first
+    sub_response = auth_client.post('/logger.html', follow_redirects=True, data={
+        'burn_date': str(date.today()),
+        'burn_location': 'Anywhere',
+        'burn_prop': 'UniquePoi',
+        'burn_notes': '',
+    })
+    assert(sub_response.status_code == 200)
 
+    # Execute - Load page 
+    response = auth_client.get('/logger.html', follow_redirects=True)
+
+    # Verify
+    assert(response.status_code == 200)
+    assert(f'<p>Last burn logged ({str(date.today())}):<br>UniquePoi at Anywhere</p>'.encode('utf-8') in response.data)
+
+def test_populates_last_burn_retroactive(auth_client):
+    # Set up - Post a more recent burn first - This should populate as most recent
+    sub_response = auth_client.post('/logger.html', follow_redirects=True, data={
+        'burn_date': '2024-10-02',
+        'burn_location': 'Anywhere',
+        'burn_prop': 'UniquePoi',
+        'burn_notes': '',
+    })
+    assert(sub_response.status_code == 200)
+
+    # Set up a second burn BEFORE the first (Which should still populate first as last burn)
+    sub_response = auth_client.post('/logger.html', follow_redirects=True, data={
+        'burn_date': '2023-10-02',
+        'burn_location': 'AnywhereElse',
+        'burn_prop': 'UniqueDragon',
+        'burn_notes': '',
+    })
+    assert(sub_response.status_code == 200)
+
+    # Execute - Load page 
+    response = auth_client.get('/logger.html', follow_redirects=True)
+
+    # Verify
+    assert(response.status_code == 200)
+    assert(f'<p>Last burn logged (2024-10-02):<br>UniquePoi at Anywhere</p>'.encode('utf-8') in response.data)
+    
+    
+
+    
+    
+    
     
 
 
