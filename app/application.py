@@ -39,6 +39,9 @@ def sign_in_page():
 
         # Try and find the user
         user = db.session.query(User).filter_by(email=email).first()
+        
+        # Get the remember me setting
+        remember_me = True if request.form.get('rememberMe') == 'on' else False
 
         # Validate the user
         if not user or not user.check_pass(password):
@@ -47,7 +50,7 @@ def sign_in_page():
 
         else:
             # log the user in and update their last login time
-            login_user(user)
+            login_user(user, remember=remember_me)
             user.last_login = datetime.now().astimezone()
             db.session.commit()
 
