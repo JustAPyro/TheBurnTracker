@@ -47,11 +47,11 @@
     </div>
     {% if quick_props and quick_props|length > 0 %}
     <div class="card-body border-top pt-1 prop_quick_pick" aria-label="Toggle buttons">
-      {% set rows = quick_props|length // 4 + (1 if quick_props|length % 4 > 0 else 0) %}
+      {% set rows = quick_props|length // 3 + (1 if quick_props|length % 3 > 0 else 0) %}
       {% for row in range(rows) %}
       <div class="row">
-        {% for col in range(4) %}
-          {% set index = row * 4 + col %}
+        {% for col in range(3) %}
+          {% set index = row * 3 + col %}
           {% if index < quick_props|length %}
           <div class="col square p-1 d-flex align-items-center justify-content-center" onclick="clickQuickProp('{{quick_props[index]}}')">
             <input type="checkbox" class="btn-check" id="quick_prop" autocomplete="off">

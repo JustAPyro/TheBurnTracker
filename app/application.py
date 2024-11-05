@@ -133,7 +133,7 @@ def spinner_logger_page():
     for burn in current_user.burns:
         prop_counter[burn.prop] += 1
 
-    prop_count = prop_counter.most_common(8)
+    prop_count = prop_counter.most_common(6)
     quick_props = [prop for prop, count in prop_count]
 
     return render_template('spinner/logger.html', quick_props=quick_props)
