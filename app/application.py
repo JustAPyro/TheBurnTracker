@@ -99,6 +99,15 @@ def sign_up_page():
 @login_required
 def spinner_logger_page():
 
+    prop_counter = Counter()
+    burns = db.session.query(Burn).filter_by(user_id=current_user.id).order_by(Burn.time.asc()).all()
+    for burn in burns: 
+        prop_counter[burn.prop] += 1
+
+    prop_counter = prop_counter.most_common(6)
+    quick_props = [prop for prop, count in prop_counter]
+
+
     if request.method == 'POST':
 
         # Get the location and abort with 400 if it's empty or just whitespace
@@ -129,14 +138,7 @@ def spinner_logger_page():
         db.session.commit()
         flash('Burn Logged', category='success')
 
-    prop_counter = Counter()
-    for burn in current_user.burns:
-        prop_counter[burn.prop] += 1
-
-    prop_count = prop_counter.most_common(6)
-    quick_props = [prop for prop, count in prop_count]
-
-    return render_template('spinner/logger.html', quick_props=quick_props)
+    return render_template('spinner/logger.html', quick_props=quick_props, burns=burns)
 
 @app.route('/profile.html', methods=['GET'])
 @login_required

@@ -86,9 +86,9 @@
   </div>
   
   <!-- If the user has a burn we also display information about the last burn logged -->
-  {% if current_user.burns %}
+  {% if burns %}
   <div class="m-3">
-    <p>Last burn logged ({{current_user.burns[-1].time}}):<br>{{current_user.burns[-1].prop}} at {{current_user.burns[-1].location}}</p>
+    <p>Last burn logged ({{burns[-1].time}}):<br>{{burns[-1].prop}} at {{burns[-1].location}}</p>
   </div>
   {% endif %}
   
