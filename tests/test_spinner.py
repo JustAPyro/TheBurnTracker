@@ -5,7 +5,6 @@ def test_unauthenticated(client):
     assert(response.status_code == 200)
     
 
-def test_get(client):
-    Actions(client).create_user(username='Tester')
-    response = client.get('/spinner/Tester.html', follow_redirects=True)
+def test_get_authenticated(auth_client):
+    response = auth_client.get(f'/spinner/{auth_client.username}.html')
     assert(response.status_code == 200)
