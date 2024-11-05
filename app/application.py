@@ -138,6 +138,13 @@ def spinner_logger_page():
 
     return render_template('spinner/logger.html', quick_props=quick_props)
 
+@app.route('/profile.html', methods=['GET'])
+@login_required
+def profile_page():
+    return redirect(url_for('main.spinner_profile_page', spinner_username=current_user.username))
+
+
+
 @app.route('/sign-out.html')
 def sign_out_page():
     logout_user()

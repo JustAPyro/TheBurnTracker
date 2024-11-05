@@ -22,6 +22,8 @@
 
 </style>
 <form method="post">
+
+  <!-- HTML section for the burn date -->
   <div class="card m-3">
     <div class="card-body p-2">
       <div class="d-flex flex-row">
@@ -30,6 +32,8 @@
       </div>
     </div>
   </div>
+
+  <!-- HTML section for burn location, populated with last burn -->
   <div class="card m-3">
     <div class="card-body p-2">
       <div class="d-flex flex-row">
@@ -38,6 +42,8 @@
       </div>
     </div>
   </div>
+
+  <!-- This section of HTML generates the prop field -->
   <div class="card m-3">
     <div class="card-body p-2">
       <div class="d-flex flex-row">
@@ -45,6 +51,8 @@
         <input type="text" class="form-control ms-1" id="burn_prop" name="burn_prop" value="">
       </div>
     </div>
+
+    <!-- This section of code generates the Quick Prop selection pane -->
     {% if quick_props and quick_props|length > 0 %}
     <div class="card-body border-top pt-1 prop_quick_pick" aria-label="Toggle buttons">
       {% set rows = quick_props|length // 3 + (1 if quick_props|length % 3 > 0 else 0) %}
@@ -54,12 +62,11 @@
           {% set index = row * 3 + col %}
           {% if index < quick_props|length %}
           <div class="col square p-1 d-flex align-items-center justify-content-center" onclick="clickQuickProp('{{quick_props[index]}}')">
-            <input type="checkbox" class="btn-check" id="quick_prop" autocomplete="off">
-            <label class="btn btn-outline-primary w-100 h-100 d-flex align-items-center justify-content-center luka-overflow" for="btn-check">{{quick_props[index]}}</label>
+            <input type="checkbox" class="btn-check" id="quick_prop_{{quick_props[index]}}" autocomplete="off">
+            <label class="btn btn-outline-primary w-100 h-100 d-flex align-items-center justify-content-center luka-overflow" for="quick_prop_{{quick_props[index]}}">{{quick_props[index]}}</label>
           </div>
           {% else %}
-          <div class="col square p-1 d-flex align-items-center justify-content-center">
-          </div>
+          <div class="col square p-1 d-flex align-items-center justify-content-center"></div>
           {% endif %}
         {% endfor %}
       </div>
@@ -67,6 +74,8 @@
     </div>
     {% endif %}
   </div>
+
+  <!-- The text field for butn notes -->
   <div class="card m-3">
     <div class="card-body p-2">
       <div class="d-flex flex-row">
@@ -75,11 +84,15 @@
       </div>
     </div>
   </div>
+  
+  <!-- If the user has a burn we also display information about the last burn logged -->
   {% if current_user.burns %}
   <div class="m-3">
     <p>Last burn logged ({{current_user.burns[-1].time}}):<br>{{current_user.burns[-1].prop}} at {{current_user.burns[-1].location}}</p>
   </div>
   {% endif %}
+  
+  <!-- Submission -->
   <div class="m-2">
     <button type="submit" class="btn btn-primary btn-lg w-100">Submit</input>
   </div>
