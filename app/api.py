@@ -29,7 +29,17 @@ class Validator:
         
         return self
 
-    def optional(self, field):
+    def optional(self, field, oftype='any'):
+        if self.json.get(field):
+            try:
+                method = getattr(Validator, f'_type_{oftype}')
+                if not method(self, self.json.get(field)):
+                    self.problems.append({'TypeError': field})
+                else:
+                    self.json[field] = method(self, self.json.get(field))
+            except:
+                pass
+
         self.may_contain.append(field)
         return self
 
@@ -205,6 +215,38 @@ def user_burns_api_auth(user_id: int):
     db.session.add(burn)
     db.session.commit()
     return jsonify(burn.as_dict())
+
+@api.route('/user/<user_id>/burns/<burn_id>.json')
+def user_burns_specific_api_noauth(user_id: int, burn_id: int):
+    burn = db.session.query(Burn).filter_by(id=burn_id).first()
+    return jsonify(burn.as_dict())
+
+@api.route('/user/<user_id>/burns/<burn_id>.json', methods=['PATCH', 'DELETE'])
+def user_burns_specific_api_auth(user_id: int, burn_id: int):
+    if request.method == 'PATCH':
+        burn = db.session.query(Burn).filter_by(id=burn_id).first()
+        if not burn:
+            abort(404)
+
+        problems = (Validator(request)
+                    .optional('location')
+                    .optional('time', oftype='date')
+                    .optional('prop')
+                    .optional('notes')
+                    .validate())
+        if problems:
+            return jsonify(problems), 403
+
+
+
+        for field, value in request.json.items():
+            setattr(burn, field, value)
+        db.session.commit()
+        return jsonify(burn.as_dict())
+
+
+
+    
 
 
 
