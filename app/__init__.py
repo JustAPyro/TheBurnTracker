@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from dotenv import load_dotenv 
 from flasgger import Swagger, swag_from
-from app.database import Base, User
+from app.database import Base, User, Burn
 import os
 
 # Required environment variables to launch
@@ -50,8 +50,6 @@ def load_user_from_request(request):
         token = auth_headers[1]
 
         data = jwt.decode(token, os.getenv('TBT_SECRET'), algorithms='HS256')
-        print('test')
-        print(data)
         user_id = data['sub'].split('+')[0]
         user = db.session.query(User).filter_by(id=user_id).first()
         if user:

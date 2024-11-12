@@ -34,6 +34,14 @@ class User(Base, UserMixin):
         default = 'robohash'
         return f'https://www.gravatar.com/avatar/{email_hash}?d={default}&s={size}'
 
+    def as_dict(self):
+        return {
+            'username': self.username,
+            'profile_url': self.avatar(64),
+            'last_login': self.last_login,
+            'created_on': self.created_on,
+        }
+
     def check_pass(self, password: str):
         return check_password_hash(self.password, password)
 
@@ -52,6 +60,16 @@ class Burn(Base):
     time: Mapped[date] = mapped_column()
     prop: Mapped[str] = mapped_column(String(100))
     notes: Mapped[str] = mapped_column(String(280), nullable=True)
+
+    def as_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'location': self.location,
+            'time': self.time,
+            'prop': self.prop,
+            'notes': self.notes,
+        }
     
 class PasswordReset(Base):
     __tablename__ = 'links'
