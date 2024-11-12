@@ -59,6 +59,8 @@ def sign_in_page():
 
     return render_template('auth/sign_in.html', request=request)
 
+
+    return 200, ''
 @app.route('/sign-up.html', methods=['GET', 'POST'])
 def sign_up_page():
     if request.method == 'POST':
