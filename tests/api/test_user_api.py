@@ -14,6 +14,7 @@ def test_get_user_none(client):
     assert(response.status_code == 200)
     assert(response.json == [])
 
+
 def test_get_user_one(client):
     # Set-up
     data = {
@@ -67,6 +68,15 @@ def test_post_user(client):
     assert(response.status_code == 200)
     assert(response.json == {'username': 'Tester', 'email': 'Tester@gmail.com', 'id': 1})
 
+def test_post_user_missing_fields_empty(client):
+    # Execute
+    response = client.post(url, json={'email': 'Tester@gmail.com', 'password': '12345678'})
+
+    # Verify
+    assert(response.status_code == 400)
+    assert(response.json == [{'Missing field': 'username'}])
+
+
 def test_post_user_email_collision(client):
     # Set up
     data = {
@@ -83,7 +93,7 @@ def test_post_user_email_collision(client):
 
     # Verify
     assert(response.json == [{'Not unique': 'email'}])
-    assert(response.status_code == 403)
+    assert(response.status_code == 400)
 
 def test_post_user_username_collision(client):
     # Set up
@@ -101,7 +111,7 @@ def test_post_user_username_collision(client):
 
     # Verify
     assert(response.json == [{'Not unique': 'username'}])
-    assert(response.status_code == 403)
+    assert(response.status_code == 400)
 
 
 def test_post_user_missing_fields(client):
@@ -112,8 +122,9 @@ def test_post_user_missing_fields(client):
     response = client.post(url, json=data)
     
     # Verify
-    assert(response.status_code == 403)
+    assert(response.status_code == 400)
     assert(response.json == [{'Missing field': 'email'}])
+
 
 
 

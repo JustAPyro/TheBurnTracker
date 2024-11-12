@@ -2,7 +2,7 @@ from app import db, User, Burn
 from flask_login import login_required, current_user
 import os
 import jwt
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, UTC
 from flask import Blueprint, request, jsonify
 api = Blueprint('api', __name__)
 
@@ -64,29 +64,27 @@ class Validator:
         except:
             return None
 
-@api.route('/auth/sign-in.json', methods=['GET', 'POST'])
+@api.route('/auth/sign-in.json', methods=['POST'])
 def sign_in_api():
-
-    problems = []
-    for field in ('email', 'password'):
-        if request.json.get(field) == None:
-            problems.append({'Missing field': field})
-
+    problems = (Validator(request)
+                .contains('email')
+                .contains('password')
+                .validate())
 
     if problems:
-        return jsonify(problems), 403
+        return jsonify(problems), 400
     
     user = db.session.query(User).filter_by(email=request.json.get('email')).first()
     if not user or not user.check_pass(request.json.get('password')):
-        return jsonify({'Unknown': 'username'})
+        return jsonify({'Unknown': 'username/password'}), 403
 
     user.last_login = datetime.now().astimezone()
     db.session.commit()
 
     token = jwt.encode({
             'sub': f'{user.id}+{user.username}+{user.email}',
-            'iat': datetime.utcnow(),
-            'exp': datetime.utcnow() + timedelta(minutes=30)
+            'iat': datetime.now(UTC),
+            'exp': datetime.now(UTC) + timedelta(minutes=30)
         }, 
         os.getenv('TBT_SECRET'), 
         algorithm='HS256')
@@ -125,13 +123,13 @@ def user_api():
         email = request.json.get('email')
         password = request.json.get('password')
         
-        if db.session.query(User).filter(User.username.ilike(username)).first():
+        if username and db.session.query(User).filter(User.username.ilike(username)).first():
             problems.append({'Not unique': 'username'})
-        if db.session.query(User).filter_by(email=email).first():
+        if email and db.session.query(User).filter_by(email=email).first():
             problems.append({'Not unique': 'email'})
                             
         if problems:
-            return jsonify(problems), 403
+            return jsonify(problems), 400
 
         # Create a user and add to database
         user = User(username=username, email=email, password=User.hash_pass(password))
