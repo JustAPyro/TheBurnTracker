@@ -1,5 +1,5 @@
 from app import db, User
-from flask_login import login_required
+from flask_login import login_required, current_user
 import os
 import jwt
 from datetime import datetime, timedelta
@@ -31,15 +31,10 @@ def sign_in_api():
             'exp': datetime.utcnow() + timedelta(minutes=30)
         }, 
         os.getenv('TBT_SECRET'), 
-        algorihtm='HS256')
+        algorithm='HS256')
 
     # login_user()
     return jsonify({'token': token}), 200
-
-@api.route('/test.json')
-@login_required
-def test():
-    return jsonify({'msg': 'success'})
 
 @api.route('/user.json', methods=['GET', 'POST'])
 def user_api():
@@ -82,4 +77,12 @@ def user_api():
             'username': user.username,
             'email': user.email
         })
+
+@api.route('/session.json')
+@login_required
+def session_api():
+    return jsonify({
+        'id': current_user.id,
+        'username': current_user.username,
+    })
 
