@@ -244,6 +244,12 @@ def user_burns_specific_api_auth(user_id: int, burn_id: int):
         db.session.commit()
         return jsonify(burn.as_dict())
 
+    if request.method == 'DELETE':
+        burn = db.session.query(Burn).filter_by(id=burn_id).delete()
+        db.session.commit()
+        return jsonify([]), 200
+
+
 
 
     
