@@ -58,8 +58,6 @@ def load_user_from_request(request):
         print('expired')
         return None
     except (jwt.InvalidTokenError, Exception) as e:
-        print(e)
-        print('invalid')
         return None
     return None
 

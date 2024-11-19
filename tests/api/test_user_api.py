@@ -4,7 +4,12 @@ import requests
 import pytest
 
 
-url = 'http://127.0.0.1:5000/user.json'
+url = 'http://127.0.0.1:5000/users.json'
+tester_json = {
+    'email': 'Tester@gmail.com',
+    'username': 'Tester',
+    'password': '12345678'
+}
 
 def test_get_user_none(client):
     # Execute
@@ -125,6 +130,47 @@ def test_post_user_missing_fields(client):
     assert(response.status_code == 400)
     assert(response.json == [{'Missing field': 'email'}])
 
+def test_get_user_specific(client):
+    # Set up
+    sur = client.post('/users.json', json=tester_json)
+    assert(sur.status_code == 200)
+
+    # Execute
+    response = client.get('/users/1.json')
+
+    # Verify
+    assert(response.status_code == 200)
+    # "Public" fields
+    for field in ('username', 'created_on', 'last_login'):
+        assert(field in response.json)
+
+    # "Private fields"
+    for field in ('email', 'password'):
+        assert(field not in response.json)
+
+def test_get_user_specific_missing(client):
+    # Execute
+    response = client.get('/users/200.json')
+
+    # Verify
+    assert(response.status_code == 404)
+    assert('message' in response.json)
+    assert('path' in response.json)
+
+def test_patch_user_noauth(client):
+    # Setup
+    r = client.post('/users.json', json=tester_json)
+    assert(r.status_code == 200)
+
+    
+def test_patch_user_missing(client):
+    # Execute
+    response = client.patch('/users/200.json')
+
+    # Verify
+    assert(response.status_code == 404)
+    assert('message' in response.json)
+    assert('path' in response.json)
 
 
 

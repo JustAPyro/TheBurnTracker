@@ -35,11 +35,12 @@ def test_post_sign_in_extra_fields(client):
 
 def test_post_sign_in_successful(client):
     # Setup
-    sur = client.post('/user.json', json={
+    sur = client.post('/users.json', json={
         'email': 'Tester@gmail.com',
         'password': '12345678',
         'username': 'Tester'
     })
+    assert(sur.status_code == 200)
 
     # Execute
     response = client.post(url, json={

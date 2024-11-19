@@ -97,10 +97,11 @@ def sign_in_api():
 def session_api():
     return jsonify({
         'id': current_user.id,
+        'email': current_user.email,
         'username': current_user.username,
     })
 
-@api.route('/user.json', methods=['GET', 'POST'])
+@api.route('/users.json', methods=['GET', 'POST'])
 def user_api():
     if request.method == 'GET':
         output = []
@@ -108,7 +109,7 @@ def user_api():
             output.append({
                 'username': user.username,
                 'email': user.email,
-                'id': user.id
+                'id': user.id,
             }) 
         return jsonify(output) 
 
@@ -142,20 +143,26 @@ def user_api():
             'email': user.email
         })
 
-@api.route('/user/<user_id>.json', methods=['GET'])
+@api.route('/users/<user_id>.json', methods=['GET'])
 def user_specified_api(user_id: int):
     user = db.session.query(User).filter_by(id=user_id).first()
     if not user:
-        abort(404)
+        return jsonify({
+            'message': 'User could not be found.',
+            'path': 'path/user_id'
+        }), 404
 
     return jsonify(user.as_dict())
 
-@api.route('/user/<user_id>.json', methods=['PATCH'])
+@api.route('/users/<user_id>.json', methods=['PATCH'])
 @login_required
 def user_specified_api_auth(user_id: int):
     user = db.session.query(User).filter_by(id=user_id).first()
     if not user:
-        abort(404)
+        return jsonify({
+            'message': 'User could not be found.',
+            'path': 'path/user_id'
+        }), 404
 
     blocked_fields = [
         'password',
@@ -168,19 +175,20 @@ def user_specified_api_auth(user_id: int):
     for field in request.json.keys():
         if field in blocked_fields: 
             problems.append({'Blocked': field})
+
         elif not hasattr(user, field):
             problems.append({'Unknown': field})
-
     if len(problems) > 0:
-        return jsonify(problems), 403
+        return jsonify(problems), 400
 
     for field, value in request.json.items():
         setattr(user, field, value)
 
+    db.session.commit()
     return jsonify(user.as_dict())
         
 
-@api.route('/user/<user_id>/burns.json')
+@api.route('/users/<user_id>/burns.json')
 def user_burns_api_noauth(user_id: int):
     user = db.session.query(User).filter_by(id=user_id).first()
     if not user:
@@ -188,7 +196,7 @@ def user_burns_api_noauth(user_id: int):
 
     return jsonify([burn.as_dict() for burn in user.burns])
 
-@api.route('/user/<user_id>/burns.json', methods=['POST'])
+@api.route('/users/<user_id>/burns.json', methods=['POST'])
 def user_burns_api_auth(user_id: int):
     user = db.session.query(User).filter_by(id=user_id).first()
     #if not user or user_id != current_user.id:
@@ -202,7 +210,7 @@ def user_burns_api_auth(user_id: int):
         .validate())
 
     if len(problems) > 0:
-        return jsonify(problems), 403
+        return jsonify(problems), 400
 
     burn = Burn(
         user_id=user_id, 
@@ -214,12 +222,12 @@ def user_burns_api_auth(user_id: int):
     db.session.commit()
     return jsonify(burn.as_dict())
 
-@api.route('/user/<user_id>/burns/<burn_id>.json')
+@api.route('/users/<user_id>/burns/<burn_id>.json')
 def user_burns_specific_api_noauth(user_id: int, burn_id: int):
     burn = db.session.query(Burn).filter_by(id=burn_id).first()
     return jsonify(burn.as_dict())
 
-@api.route('/user/<user_id>/burns/<burn_id>.json', methods=['PATCH', 'DELETE'])
+@api.route('/users/<user_id>/burns/<burn_id>.json', methods=['PATCH', 'DELETE'])
 def user_burns_specific_api_auth(user_id: int, burn_id: int):
     if request.method == 'PATCH':
         burn = db.session.query(Burn).filter_by(id=burn_id).first()
