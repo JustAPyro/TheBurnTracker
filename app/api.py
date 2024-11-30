@@ -2,7 +2,7 @@ from app import db, User, Burn
 from flask_login import login_required, current_user
 import os
 import jwt
-from datetime import date, datetime, timedelta, UTC
+from datetime import date, datetime, timedelta, timezone
 from flask import Blueprint, request, jsonify
 api = Blueprint('api', __name__)
 
@@ -83,8 +83,8 @@ def sign_in_api():
 
     token = jwt.encode({
             'sub': f'{user.id}+{user.username}+{user.email}',
-            'iat': datetime.now(UTC),
-            'exp': datetime.now(UTC) + timedelta(minutes=30)
+            'iat': datetime.now(timezone.utc),
+            'exp': datetime.now(timezone.utc) + timedelta(minutes=30)
         }, 
         os.getenv('TBT_SECRET'), 
         algorithm='HS256')
