@@ -291,7 +291,7 @@ def spinner_page(spinner_username: str):
         # Create the burn object
         db.session.add(Burn(user_id=spinner.id, location=location, prop=prop, notes=notes, time=date(int(burn_date[0]), int(burn_date[1]), int(burn_date[2]))))
         db.session.commit() 
-        return redirect(url_for('spinner_page', spinner_username=spinner.username))
+        return redirect(url_for('main.spinner_page', spinner_username=spinner.username))
 
     burns = db.session.query(Burn).filter_by(user_id=spinner.id).all()
     return render_template('spinner.html', 
