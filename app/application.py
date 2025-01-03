@@ -300,6 +300,7 @@ def spinner_page(spinner_username: str):
                            date_today=datetime.now().strftime('%Y-%m-%d'),
                            current_user=current_user,
                            )
+
 @app.route('/burn/<burn_id>/edit.html')
 @login_required
 def edit_burn_page(burn_id: int):
@@ -375,15 +376,20 @@ def spinner_stats_page(spinner_username):
 
     dates = [x for x in date_list.keys()]
 
-    unique_locations, location_counts = zip(*locations.items())
-    unique_locations = str(unique_locations).replace('(','[').replace(')', ']')
-    location_counts = str(location_counts).replace('(', '[').replace(')', ']')
+    unique_props = []
+    prop_counts = []
+    unique_locations = []
+    location_counts = []
 
-    unique_props, prop_counts = zip(*props.items())        
-    unique_props = str(unique_props).replace('(', '[').replace(')', ']').replace('\'', '"')
-    prop_counts = str(prop_counts).replace('(', '[').replace(')', ']')
+    if locations and props:
+        unique_locations, location_counts = zip(*locations.items())
+        unique_locations = str(unique_locations).replace('(','[').replace(')', ']')
+        location_counts = str(location_counts).replace('(', '[').replace(')', ']')
+
+        unique_props, prop_counts = zip(*props.items())        
+        unique_props = str(unique_props).replace('(', '[').replace(')', ']').replace('\'', '"')
+        prop_counts = str(prop_counts).replace('(', '[').replace(')', ']')
     
-    poi_counts = [0]
 
 
 
@@ -398,11 +404,9 @@ def spinner_stats_page(spinner_username):
 
     dates = [str(x) for x in dates]
 
-
-
     return render_template('spinner_stats.html', 
                            total_burns=total_burns,
-                           last_burn=str(burns[-1].time),
+                           last_burn=str(burns[-1].time) if burns else [],
                            unique_props=unique_props,
                            true_unique_props=props.keys(),
                            prop_counts=prop_counts,
