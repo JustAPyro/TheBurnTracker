@@ -16,7 +16,7 @@ class Email:
         message['Subject'] = 'Your password reset link for TheBurnTracker' 
 
         # Load the html template
-        with open('app/communications/email_pwd_reset.html', 'r') as file:
+        with open('tbt/app/communications/email_pwd_reset.html', 'r') as file:
             html = file.read()
 
         # Populate the formatting
