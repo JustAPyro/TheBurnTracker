@@ -18,7 +18,8 @@ class Email:
 
         # Load the html template and throw error if not found
         try:
-            with open(f'tbt/app/communications/{{template}}.html', 'r') as file:
+            template_file = f'tbt/app/communications/'+template+'.html'
+            with open(template_file, 'r') as file:
                 html = file.read()
         except:
             raise FileNotFoundError(
