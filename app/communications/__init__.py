@@ -17,14 +17,9 @@ class Email:
         message['Subject'] = 'Your password reset link for TheBurnTracker' 
 
         # Load the html template and throw error if not found
-        try:
-            template_file = f'tbt/app/communications/'+template+'.html'
-            with open(template_file, 'r') as file:
-                html = file.read()
-        except:
-            raise FileNotFoundError(
-                errno.ENOENT, os.strerror(errno.ENOENT), template
-            )
+        template_file = f'tbt/app/communications/'+template
+        with open(template_file, 'r') as file:
+            html = file.read()
 
         # Populate the formatting
         for key, value in format.items():
@@ -45,8 +40,6 @@ class Email:
         )
         server.sendmail(os.getenv('TBT_EMAIL_ADDRESS'), [target_email], message.as_string())
         server.quit()
-
-        print('emailed')
 
 if __name__ == '__main__':
     load_dotenv()
