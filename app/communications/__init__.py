@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import errno
 import os
 
 class Email:
@@ -15,9 +16,14 @@ class Email:
         message['From'] = os.getenv('TBT_EMAIL_ADDRESS')
         message['Subject'] = 'Your password reset link for TheBurnTracker' 
 
-        # Load the html template
-        with open('tbt/app/communications/email_pwd_reset.html', 'r') as file:
-            html = file.read()
+        # Load the html template and throw error if not found
+        try:
+            with open(f'tbt/app/communications/{{template}}.html', 'r') as file:
+                html = file.read()
+        except:
+            raise FileNotFoundError(
+                errno.ENOENT, os.strerror(errno.ENOENT), template
+            )
 
         # Populate the formatting
         for key, value in format.items():
