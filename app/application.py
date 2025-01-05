@@ -19,6 +19,8 @@ import io
 import git
 from app import db
 
+from app.communications import Email
+
 from flask import Blueprint
 app = Blueprint('main', __name__)
 
@@ -173,31 +175,10 @@ def forgot_password_page():
         ))
         db.session.commit()
 
-        # TODO: Stop this from being possible to spam and add a try/catch block
-        from_addr = os.getenv('TBT_EMAIL_ADDRESS')
-        to_addr = user.email
-
-        # Set up the email headers
-        message = MIMEMultipart()
-        message['To'] = to_addr
-        message['From'] = from_addr
-        message['Subject'] = 'Your password reset link for TheBurnTracker' 
-
-        # Attach the email message
-        reset_url = os.getenv('TBT_BASE_URL') + url_for('reset_password_page', reset_code=random_code)
-        message_text = MIMEText(f'To reset your password go to this link: {reset_url}')
-        message.attach(message_text)
-
-        # Send the email
-        server = smtplib.SMTP('smtp.gmail.com:587')
-        server.ehlo('Gmail')
-        server.starttls()
-        server.login(
-            os.getenv('TBT_EMAIL_ADDRESS'),
-            os.getenv('TBT_EMAIL_PASSWORD')
-        )
-        server.sendmail(from_addr, [to_addr], message.as_string())
-        server.quit()
+        Email.send_template('email_pwd_reset.html', email, {
+            'username': user.username,
+            'reset_url': os.getenv('TBT_BASE_URL') + url_for('main.reset_password_page', reset_code=random_code)
+        })
 
         flash('We have emailed you a link to reset your password. This link is valid for 15 minutes.', category='success')
 
