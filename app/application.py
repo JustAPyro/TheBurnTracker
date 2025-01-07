@@ -166,7 +166,7 @@ def forgot_password_page():
         if not user:
             flash('There is no user with this email in our database.', category='error')
         
-        # Generate a code to reset this users password
+        # Generate a code and url to reset this users password
         random_code = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(24))
         db.session.query(PasswordReset).filter_by(user_id=user.id).delete()
         db.session.add(PasswordReset(
@@ -174,10 +174,12 @@ def forgot_password_page():
             reset_code=random_code
         ))
         db.session.commit()
+        user_reset_url = os.getenv('TBT_BASE_URL') + url_for('main.reset_password_page', reset_code=randome_code)
 
+        # Send the reset password email along with the custom url
         Email.send_template('email_pwd_reset.html', email, {
             'username': user.username,
-            'reset_url': os.getenv('TBT_BASE_URL') + url_for('main.reset_password_page', reset_code=random_code)
+            'reset_url': user_reset_url
         })
 
         flash('We have emailed you a link to reset your password. This link is valid for 15 minutes.', category='success')
@@ -281,6 +283,11 @@ def spinner_page(spinner_username: str):
                            date_today=datetime.now().strftime('%Y-%m-%d'),
                            current_user=current_user,
                            )
+
+@app.route('/settings.html')
+@login_required
+def settings_page():
+    return render_template('settings.html', current_user=current_user)
 
 @app.route('/burn/<burn_id>/edit.html')
 @login_required

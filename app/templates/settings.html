@@ -1,0 +1,48 @@
+{% extends "root.html" %}
+
+{% block content %}
+<div class="container">
+  <div class="card my-3">
+    <div class="card-body">
+      <form method="POST">
+        <div class="form-group">
+          <label for="location">City:</label>
+          <input type="text" class="form-control" id="city" name="city" value="{{current_user.city if current_user.city else ''}}">
+        </div>
+        <div class="form-group">
+            <label for="date">State:</label>
+          <input type="text" class="form-control" id="state" name="state" value="{{current_user.state if current_user.state else ''}}" step="any">
+        </div>
+        <div>
+          <button type="button" class="btn btn-primary" onclick="patch_settings({{current_user.id}})">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
+
+
+{% block js %}
+<script>
+async function patch_settings(id, redirect_to_user) {
+  new_city = document.getElementById('city').value
+  new_state = document.getElementById('state').value
+
+  const response = await fetch('/users/'+id+'.json', {
+    method: 'PATCH',
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      city: new_city,
+      state: new_state,
+    })
+  })
+  
+  window.location.href = '/settings.html'
+}
+</script>
+{% endblock %}
+
+

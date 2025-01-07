@@ -41,8 +41,3 @@ class Email:
         server.sendmail(os.getenv('TBT_EMAIL_ADDRESS'), [target_email], message.as_string())
         server.quit()
 
-if __name__ == '__main__':
-    load_dotenv()
-    Email.send_template('email_pwd_reset.html', 'luke.m.hanna@gmail.com', {
-        'username': 'Luka'
-    })
