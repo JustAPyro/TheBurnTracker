@@ -24,8 +24,6 @@ class User(Base, UserMixin):
 
 
     # --- Profile Information ---
-    location: Mapped[str] = mapped_column(String(36), nullable=True)
-
     state: Mapped[str] = mapped_column(String(2), nullable=True)
     city: Mapped[str] = mapped_column(String(64), nullable=True)
 
