@@ -9,25 +9,23 @@
     </div>
   </div>
   <form method="POST" class="signin-form">
-    <div class="form-group mt-3">
-      <input type="text" class="form-control" name='username' required>
+    <div class="form-floating mt-3">
+      <input type="text" class="form-control" id="username" name='username' placeholder='ARandomUsername' required>
       <label class="form-control-placeholder" for="username">Username</label>
     </div>
-    <div class="form-group mt-3">
-      <input type="text" class="form-control" name='email' required>
+    <div class="form-floating mt-3">
+      <input type="text" class="form-control" name='email' placeholder=' ' required>
       <label class="form-control-placeholder" for="email">E-mail</label>
     </div>
-    <div class="form-group mt-5">
-      <input id="password-field" type="password" name="password" class="form-control" required>
+    <div class="form-floating mt-3">
+      <input id="password-field" type="password" name="password" class="form-control" placeholder=' ' required>
       <label class="form-control-placeholder" for="password">Password</label>
-      <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
     </div>
-    <div class="form-group mt-5">
-      <input id="password-confirm-field" type="password" name="password_confirm" class="form-control" required>
+    <div class="form-floating mt-3">
+      <input id="password-confirm-field" type="password" name="password_confirm" class="form-control" placeholder=' ' required>
       <label class="form-control-placeholder" for="password">Confirm Password</label>
-      <span toggle="#password-confirm-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
     </div>
-    <div class="form-group">
+    <div class="form-group mt-3">
       <button type="submit" class="form-control btn btn-primary rounded submit px-3">Sign Up</button>
     </div>
       <div class="w-50 text-md-right">
