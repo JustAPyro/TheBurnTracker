@@ -4,99 +4,128 @@
 
 {% block content %}
 <style>
-
-  .quick-prop-button {
-
-  }
-
-  .square {
-    aspect-ratio: 1 / 1;
-  }
-
-  .luka-overflow {
-    white-space: nowrap;
+  /* General card container for desktop */
+  .logger-container {
+    max-width: 600px;
+    margin: 50px auto;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background-color: #ffffff;
     overflow: hidden;
-    text-overflow: ellipsis;
-    display: inline-block;
   }
 
+  /* Card body styling */
+  .card-body {
+    padding: 1rem;
+  }
+
+  /* Submission button */
+  .btn-primary {
+    background: linear-gradient(90deg, #FF6F3D, #FF9340);
+    border: none;
+    color: white;
+    font-weight: bold;
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(90deg, #FF9340, #FF6F3D);
+  }
+
+  /* Quick props grid */
+  .prop_quick_pick .square {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    text-align: center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  /* Responsive spacing adjustments */
+  @media (min-width: 768px) {
+    .logger-container {
+      padding: 2rem;
+    }
+  }
 </style>
-<form method="post">
 
-  <!-- HTML section for the burn date -->
-  <div class="card m-3">
-    <div class="card-body p-2">
-      <div class="d-flex flex-row">
-          <label for="burn_date" class="col-form-label mx-2">Date:</label>
-          <input type="date" class="form-control ms-1" id="burn_date" name="burn_date" step="any">
-      </div>
-    </div>
-  </div>
-
-  <!-- HTML section for burn location, populated with last burn -->
-  <div class="card m-3">
-    <div class="card-body p-2">
-      <div class="d-flex flex-row">
-        <label for="burn_location" class="col-form-label mx-2">Location:</label>
-        <input type="text" class="form-control ms-1" id="burn_location" name="burn_location" value="{{ current_user.burns[-1].location if current_user.burns else ''}}">
-      </div>
-    </div>
-  </div>
-
-  <!-- This section of HTML generates the prop field -->
-  <div class="card m-3">
-    <div class="card-body p-2">
-      <div class="d-flex flex-row">
-        <label for="burn_prop" class="col-form-label mx-2">Prop:</label>
-        <input type="text" class="form-control ms-1" id="burn_prop" name="burn_prop" value="">
-      </div>
-    </div>
-
-    <!-- This section of code generates the Quick Prop selection pane -->
-    {% if quick_props and quick_props|length > 0 %}
-    <div class="card-body border-top pt-1 prop_quick_pick" aria-label="Toggle buttons">
-      {% set rows = quick_props|length // 3 + (1 if quick_props|length % 3 > 0 else 0) %}
-      {% for row in range(rows) %}
-      <div class="row">
-        {% for col in range(3) %}
-          {% set index = row * 3 + col %}
-          {% if index < quick_props|length %}
-          <div class="col square p-1 d-flex align-items-center justify-content-center" onclick="clickQuickProp('{{quick_props[index]}}')">
-            <input type="checkbox" class="btn-check" id="quick_prop_{{quick_props[index]}}" autocomplete="off">
-            <label class="btn btn-outline-primary w-100 h-100 d-flex align-items-center justify-content-center luka-overflow" for="quick_prop_{{quick_props[index]}}">{{quick_props[index]}}</label>
+<div class="container-fluid px-3">
+  <div class="logger-container">
+    <form method="post">
+      <!-- Burn Date -->
+      <div class="card m-3">
+        <div class="card-body p-2">
+          <div class="d-flex flex-row">
+            <label for="burn_date" class="col-form-label mx-2">Date:</label>
+            <input type="date" class="form-control ms-1" id="burn_date" name="burn_date" step="any">
           </div>
-          {% else %}
-          <div class="col square p-1 d-flex align-items-center justify-content-center"></div>
-          {% endif %}
-        {% endfor %}
+        </div>
       </div>
-      {% endfor %}
-    </div>
-    {% endif %}
-  </div>
 
-  <!-- The text field for butn notes -->
-  <div class="card m-3">
-    <div class="card-body p-2">
-      <div class="d-flex flex-row">
-        <label for="burn_notes" class="col-form-label mx-2">Notes:</label>
-        <input type="text" class="form-control ms-1" id="burn_notes" name="burn_notes" value="">
+      <!-- Burn Location -->
+      <div class="card m-3">
+        <div class="card-body p-2">
+          <div class="d-flex flex-row">
+            <label for="burn_location" class="col-form-label mx-2">Location:</label>
+            <input type="text" class="form-control ms-1" id="burn_location" name="burn_location" 
+              value="{{ current_user.burns[-1].location if current_user.burns else '' }}">
+          </div>
+        </div>
       </div>
-    </div>
+
+      <!-- Prop Field -->
+      <div class="card m-3">
+        <div class="card-body p-2">
+          <div class="d-flex flex-row">
+            <label for="burn_prop" class="col-form-label mx-2">Prop:</label>
+            <input type="text" class="form-control ms-1" id="burn_prop" name="burn_prop" value="">
+          </div>
+        </div>
+        {% if quick_props and quick_props|length > 0 %}
+        <div class="card-body border-top pt-1 prop_quick_pick" aria-label="Toggle buttons">
+          {% set rows = quick_props|length // 3 + (1 if quick_props|length % 3 > 0 else 0) %}
+          {% for row in range(rows) %}
+          <div class="row">
+            {% for col in range(3) %}
+              {% set index = row * 3 + col %}
+              {% if index < quick_props|length %}
+              <div class="col square p-1 d-flex align-items-center justify-content-center" onclick="clickQuickProp('{{quick_props[index]}}')">
+                <input type="checkbox" class="btn-check" id="quick_prop_{{quick_props[index]}}" autocomplete="off">
+                <label class="btn btn-outline-primary w-100 h-100 d-flex align-items-center justify-content-center luka-overflow" for="quick_prop_{{quick_props[index]}}">{{quick_props[index]}}</label>
+              </div>
+              {% else %}
+              <div class="col square p-1 d-flex align-items-center justify-content-center"></div>
+              {% endif %}
+            {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Burn Notes -->
+      <div class="card m-3">
+        <div class="card-body p-2">
+          <div class="d-flex flex-row">
+            <label for="burn_notes" class="col-form-label mx-2">Notes:</label>
+            <input type="text" class="form-control ms-1" id="burn_notes" name="burn_notes" value="">
+          </div>
+        </div>
+      </div>
+
+      <!-- Last Burn Info -->
+      {% if burns %}
+      <div class="m-3">
+        <p>Last burn logged ({{burns[-1].time}}):<br>{{burns[-1].prop}} at {{burns[-1].location}}</p>
+      </div>
+      {% endif %}
+
+      <!-- Submit Button -->
+      <div class="m-2">
+        <button type="submit" class="btn btn-primary btn-lg w-100">Submit</button>
+      </div>
+    </form>
   </div>
-  
-  <!-- If the user has a burn we also display information about the last burn logged -->
-  {% if burns %}
-  <div class="m-3">
-    <p>Last burn logged ({{burns[-1].time}}):<br>{{burns[-1].prop}} at {{burns[-1].location}}</p>
-  </div>
-  {% endif %}
-  
-  <!-- Submission -->
-  <div class="m-2">
-    <button type="submit" class="btn btn-primary btn-lg w-100">Submit</input>
-  </div>
-</form>
+</div>
 {% endblock %}
 
 {% block js %}
@@ -105,22 +134,21 @@
     const prop_field = document.getElementById("burn_prop");
     prop_field.value = prop;
   }
-</script>
-<script>
-function getCurrentDateInTimezone() {
+
+  function getCurrentDateInTimezone() {
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const now = new Date();
 
     const formattedDate = new Intl.DateTimeFormat('en-CA', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        timeZone: timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      timeZone: timeZone,
     }).format(now);
 
-    return formattedDate; // This will output in "YYYY-MM-DD" format
-}
-document.getElementById('burn_date').value = getCurrentDateInTimezone()
+    return formattedDate; // Outputs "YYYY-MM-DD" format
+  }
+
+  document.getElementById('burn_date').value = getCurrentDateInTimezone();
 </script>
 {% endblock %}
-

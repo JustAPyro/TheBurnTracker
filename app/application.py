@@ -143,6 +143,12 @@ def spinner_logger_page():
 
     return render_template('spinner/logger.html', quick_props=quick_props, burns=burns)
 
+@app.route('/records.html')
+@login_required
+def spinner_record_page():
+    return render_template('spinner/records.html')
+
+
 @app.route('/profile.html', methods=['GET'])
 @login_required
 def profile_page():
