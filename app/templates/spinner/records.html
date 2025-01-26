@@ -3,117 +3,134 @@
 {% block title %}The Burn Tracker{% endblock %}
 
 {% block includes %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block content %}
-		<div class="container">
-			<div class="row justify-content-center">
-				<div class="col-md-7 col-lg-7">
-					<div class="wrap">
-            <!--
-              <div class="img" style="background-image: url({{url_for('static', filename='images/aswan.jpg')}});"></div>
-            -->
-<div class="container">
-  <div class="card my-3">
-    <div class="card-body">
-      <form method="POST">
-        <div class="form-group">
-          <label for="location">Location:</label>
-          <input type="text" class="form-control" id="location" name="location" value="{{last_location}}">
+<div class="container mt-3">
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <!-- Table for larger screens -->
+      <div class="d-none d-md-block">
+        <div class="card">
+          <div class="card-body">
+            <table class="table" id="burn_table">
+              <thead>
+                <tr>
+                  <th scope="col">Location</th>
+                  <th scope="col" data-sort="desc">Date</th>
+                  <th scope="col">Prop</th>
+                  <th scope="col">Notes</th>
+                  <th scope="col" data-sortable="false">Edit</th>
+                  <th scope="col" data-sortable="false">Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for burn in current_user.burns %}
+                <tr>
+                  <td>{{ burn.location }}</td>
+                  <td>{{ burn.time }}</td>
+                  <td>{{ burn.prop }}</td>
+                  <td>{{ burn.notes }}</td>
+                  <td>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="window.location.href = '/burn/{{ burn.id }}/edit.html';">Edit</button>
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="delete_burn({{ burn.id }}); window.location.reload();">Delete</button>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div class="form-group">
-            <label for="date">Date:</label>
-            <input type="date" class="form-control" id="date_today" name="date_today" step="any">
+      </div>
+<!-- Cards for smaller screens -->
+
+<div class="d-md-none">
+  <div class="row">
+    {% for burn in current_user.burns %}
+    <div class="col-12 mb-3">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Prop: {{ burn.prop }}</h5>
+            <!-- Dropdown for Edit and Delete -->
+            <div class="dropdown">
+              <button
+                class="btn btn-link btn-sm text-dark"
+                type="button"
+                id="dropdownMenu{{ burn.id }}"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+                <i class="bi bi-three-dots-vertical"></i>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu{{ burn.id }}">
+                <li>
+                  <button
+                    class="dropdown-item"
+                    onclick="window.location.href = '/burn/{{ burn.id }}/edit.html';">
+                    Edit
+                  </button>
+                </li>
+                <li>
+                  <button
+                    class="dropdown-item text-danger"
+                    onclick="delete_burn({{ burn.id }}); window.location.reload();">
+                    Delete
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <p class="card-text mt-2">
+            <strong>Date:</strong> {{ burn.time }}<br>
+            <strong>Location:</strong> {{ burn.location }}<br>
+            {% if burn.notes %}
+            <strong>Notes:</strong> {{ burn.notes }}
+            {% endif %}
+          </p>
         </div>
-        <div class="form-group">
-          <label for="prop">Prop:</label>
-          <input type="text" class="form-control" id="prop" name="prop" step="any">
-        </div>
-        <div class="form-group">
-          <label for="notes">Notes:</label>
-          <input type="text" class="form-control" id="notes" name="notes">
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </form>
+      </div>
     </div>
+    {% endfor %}
   </div>
+</div>
 
-
-  <div class="card my-3">
-    <div class="card-body">
-      <form method="POST" enctype=multipart/form-data>
-        <input type=file name=file>
-        <input type=submit value=Upload>
-        
-      </form>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-body">
-      <table class="table" id="burn_table">
-        <thead>
-          <tr>
-            <th scope="col">Location</th>
-            <th scope="col" data-sort="desc">Date</th>
-            <th scope="col">Prop</th>
-            <th scope="col" data-sortable="false">Notes</th>
-            <th scope="col" data-sortable="false" data-searchable="delete"></th>
-            <th scope="col" data-sortable="false" data-searchable="delete"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for burn in spinner.burns %}
-          <tr>
-            <td>{{burn.location}}</td>
-            <td>{{burn.time}}</td>
-            <td>{{burn.prop}}</td>
-            <td>{{burn.notes}}</td>
-            <td><button type="button" class="btn btn-secondary" onclick="window.location.href = '/burn/{{burn.id}}/edit.html';">Edit</button></td>
-            <td><button type="button" class="btn btn-secondary" onclick="delete_burn({{burn.id}}); window.location.reload();">Delete</button></td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
     </div>
   </div>
 </div>
-		      </div>
-				</div>
-			</div>
-		</div>
-
 {% endblock %}
+
 {% block js %}
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
 <script>
+  // Initialize simple-datatables for larger screens
+  const dataTable = new simpleDatatables.DataTable("#burn_table", {
+    searchable: true,
+    fixedHeight: true,
+    paging: true,
+  });
 
-const dataTable = new simpleDatatables.DataTable("#burn_table", {
-	searchable: false,
-	fixedHeight: true,
-  paging: false,
-})
+  // Function to delete a burn entry
+  function delete_burn(id) {
+    fetch('/burns/' + id + '.html', {
+      method: 'DELETE',
+    });
+  }
 
-function delete_burn(id) {
-  fetch('/burns/'+id+'.html', {
-    method: 'DELETE'
-  })
-}
-
-function getCurrentDateInTimezone() {
+  // Function to get the current date in the user's timezone (if needed elsewhere)
+  function getCurrentDateInTimezone() {
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const now = new Date();
-
     const formattedDate = new Intl.DateTimeFormat('en-CA', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        timeZone: timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      timeZone: timeZone,
     }).format(now);
-
-    return formattedDate; // This will output in "YYYY-MM-DD" format
-}
-document.getElementById('date_today').value = getCurrentDateInTimezone()
+    return formattedDate;
+  }
 </script>
 {% endblock %}
