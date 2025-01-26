@@ -28,7 +28,7 @@ app = Blueprint('main', __name__)
 @app.route('/')
 def home_page():
     if current_user.is_authenticated:
-        return redirect(url_for('main.spinner_page', spinner_username=current_user.username))
+        return redirect(url_for('main.spinner_logger_page'))
     return redirect(url_for('main.sign_in_page'))
 
 @app.route('/sign-in.html', methods=['GET', 'POST'])
@@ -57,7 +57,7 @@ def sign_in_page():
             db.session.commit()
 
             # Send them to their spinner page
-            return redirect(url_for('main.spinner_page', spinner_username=user.username))
+            return redirect(url_for('main.spinner_logger_page'))
 
     return render_template('auth/sign_in.html', request=request)
 
