@@ -22,7 +22,6 @@
         {% if current_user.is_authenticated %}
         <a href={{url_for('main.spinner_logger_page')}}>Log</a>
         <a href={{url_for('main.spinner_record_page')}}>Records</a>
-        <a href={{url_for('main.spinner_page', spinner_username=current_user.username)}}>My Log</a>
         <a href={{url_for('main.spinner_stats_page', spinner_username=current_user.username)}}>Statistics</a>
         <a href={{url_for('main.spinner_burns_csv', spinner_username=current_user.username)}}>Export Data</a>
         <a href='https://github.com/JustAPyro/TheBurnTracker/issues/new'>Report Bug</a>
