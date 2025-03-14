@@ -17,24 +17,31 @@
     {% endblock %}
   </head>
   <body>
-    <div class=top-nav>
-      <div class=centered>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+  <div class="container-fluid justify-content-center">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+      <div class="navbar-nav">
         {% if current_user.is_authenticated %}
-        <a href={{url_for('main.spinner_logger_page')}}>Log</a>
-        <a href={{url_for('main.spinner_record_page')}}>Records</a>
-        <a href={{url_for('main.spinner_stats_page', spinner_username=current_user.username)}}>Statistics</a>
-        <a href={{url_for('main.spinner_burns_csv', spinner_username=current_user.username)}}>Export Data</a>
-        <a href='https://github.com/JustAPyro/TheBurnTracker/issues/new'>Report Bug</a>
-        <a href={{url_for('main.sign_out_page')}}>Sign out ({{current_user.username}})</a>
+        <a class="nav-link" href={{url_for('main.spinner_logger_page')}}>Log</a>
+        <a class="nav-link" href={{url_for('main.spinner_record_page')}}>Records</a>
+        <a class="nav-link" href={{url_for('main.spinner_stats_page', spinner_username=current_user.username)}}>Statistics</a>
+        <a class="nav-link" href={{url_for('main.spinner_burns_csv', spinner_username=current_user.username)}}>Export Data</a>
+        <a class="nav-link" href='https://github.com/JustAPyro/TheBurnTracker/issues/new'>Report Bug</a>
+        <a class="nav-link" href={{url_for('main.sign_out_page')}}>Sign out ({{current_user.username}})</a>
         {% else %}
-        <a href={{url_for('main.home_page')}}>Home</a>
-        <a href='https://github.com/JustAPyro/TheBurnTracker/issues/new'>Report Bug</a>
-        <a href={{url_for('main.sign_up_page')}}>Sign up</a>
-        <a href={{url_for('main.sign_in_page')}}>Log in</a>
+        <a class="nav-link" href={{url_for('main.home_page')}}>Home</a>
+        <a class="nav-link" href='https://github.com/JustAPyro/TheBurnTracker/issues/new'>Report Bug</a>
+        <a class="nav-link" href={{url_for('main.sign_up_page')}}>Sign up</a>
+        <a class="nav-link" href={{url_for('main.sign_in_page')}}>Log in</a>
         {% endif %}
       </div>
     </div>
-
+  </div>
+</nav>
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         {% for category, message in messages %}

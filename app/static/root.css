@@ -4,7 +4,7 @@
 }
 
 /* Background for navbar */
-.top-nav {
+.navbar {
   background: linear-gradient(to right, #ff4500, #ff8c00); /* Warm red to orange gradient */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 10px 20px;
@@ -15,7 +15,7 @@
 }
 
 /* Style for links in the bar */
-.top-nav a {
+.navbar a {
   color: #fff5e1; /* Soft off-white for contrast */
   text-decoration: none;
   font-size: 18px;
@@ -27,13 +27,13 @@
 }
 
 /* Hover effect */
-.top-nav a:hover {
+.navbar a:hover {
   background: rgba(255, 255, 255, 0.2); /* Slightly translucent white hover */
   transform: scale(1.1);
 }
 
 /* Style for active/current link */
-.top-nav a.active {
+.navbar a.active {
   background: #ffd700; /* Bright gold for the active link */
   color: #8b0000; /* Dark red text for contrast */
   font-weight: bold;
@@ -42,7 +42,7 @@
 
 /* Style for smaller screens */
 @media (max-width: 768px) {
-  .top-nav {
+  .navbar {
     flex-direction: column; /* Stack items vertically */
     padding: 10px;
   }
