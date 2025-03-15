@@ -1,0 +1,142 @@
+{% extends 'root.html' %}
+{% block title %}Import Data{% endblock %}
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <!-- Upload Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Import Data</h5>
+                        <form id="upload-form">
+                            <div class="row g-2">
+                                <div class="col-md-8">
+                                    <label for="fileInput" class="form-label">Upload File</label>
+                                    <input class="form-control" type="file" id="fileInput" accept=".csv">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="fileType" class="form-label">File Type</label>
+                                    <select class="form-select" id="fileType" disabled>
+                                        <option value="csv" selected>CSV</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="button"
+                                    class="btn btn-primary w-100 mt-3"
+                                    onclick="previewFile()">Preview</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Preview Pane (Same Width) -->
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Preview</h5>
+                        <div id="preview-container" class="table-responsive">
+                            <table id="preview-table" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr id="preview-header"></tr>
+                                </thead>
+                                <tbody id="preview-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Finalize Import Button -->
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-8 text-center">
+                <button type="button"
+                        class="btn btn-success w-100"
+                        id="finalize-btn"
+                        disabled>Finalize Import</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+  function previewFile() {
+    const fileInput = document.getElementById("fileInput");
+    const previewHeader = document.getElementById("preview-header");
+    const previewBody = document.getElementById("preview-body");
+    const finalizeBtn = document.getElementById("finalize-btn");
+
+    previewHeader.innerHTML = "";
+    previewBody.innerHTML = "";
+    finalizeBtn.disabled = true; // Disable until data is loaded
+
+    if (fileInput.files.length === 0) {
+      alert("Please select a file to preview.");
+      return;
+    }
+
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      const lines = e.target.result.split("\n").map(line => line.trim()).filter(line => line);
+      if (lines.length === 0) {
+        alert("The file appears to be empty.");
+        return;
+      }
+
+      const headers = lines[0].split(",");
+      headers.forEach(header => {
+        const th = document.createElement("th");
+        th.textContent = header;
+        previewHeader.appendChild(th);
+      });
+
+      lines.forEach(line => { // Display each row
+        const row = document.createElement("tr");
+        line.split(",").forEach(cell => {
+          const td = document.createElement("td");
+          td.textContent = cell;
+          row.appendChild(td);
+        });
+        previewBody.appendChild(row);
+      });
+
+      finalizeBtn.disabled = false; // Enable once preview is loaded
+    };
+
+    reader.readAsText(file);
+  }
+
+
+document.getElementById('finalize-btn').addEventListener('click', function () {
+    const table = document.getElementById('preview-table');
+    const rows = table.querySelectorAll('tbody tr');
+    let data = [];
+
+    rows.forEach(row => {
+        let rowData = [];
+        row.querySelectorAll('td').forEach(cell => {
+            rowData.push(cell.innerText);
+        });
+        data.push(rowData);
+    });
+
+    fetch(window.location.pathname, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ importedData: data })
+    }).then(response => response.json())
+    .then(data => {
+      if (data.redirect_url) {
+        // manually follow the redirect
+        window.location.href = data.redirect_url;
+      }
+    })
+      .catch(error => console.error('Error:', error));
+});
+    </script>
+{% endblock %}

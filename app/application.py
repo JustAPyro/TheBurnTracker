@@ -1,27 +1,29 @@
-from flask import Flask, abort, request, render_template, make_response, redirect, url_for, flash, Blueprint 
-from flask_login import login_user, login_required, logout_user, current_user, LoginManager
+import csv
+import io
+import json
+import os
+import random
+import smtplib
+import string
+from collections import Counter
+from datetime import date, datetime, timedelta
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from app.database import User, Burn, PasswordReset
-from sqlalchemy import desc, asc
-from datetime import datetime, date, timedelta
-from dotenv import load_dotenv
-from flask_restful import Resource, Api
-from flasgger import Swagger, swag_from
-from collections import Counter
-import smtplib
-import random
-import string
-import json
-import csv
-import os
-import io
+
 import git
+from dotenv import load_dotenv
+from flasgger import Swagger, swag_from
+from flask import (Blueprint, Flask, abort, flash, make_response, redirect,
+                   render_template, request, url_for)
+from flask_login import (LoginManager, current_user, login_required,
+                         login_user, logout_user)
+from flask_restful import Api, Resource
+from sqlalchemy import asc, desc
+
 from app import db
-
 from app.communications import Email
+from app.database import Burn, PasswordReset, User
 
-from flask import Blueprint
 app = Blueprint('main', __name__)
 
 # For now, no homepage so redirect to sign in
@@ -154,6 +156,42 @@ def spinner_record_page():
 def profile_page():
     return redirect(url_for('main.spinner_profile_page', spinner_username=current_user.username))
 
+@app.route('/import-data.html', methods=['GET', 'POST'])
+@login_required
+def import_data_page():
+
+    if request.method == 'POST':
+        # Guard against bad posts
+        if not request.get_json() or 'importedData' not in request.get_json():
+            return 'errorrrr'
+
+        burns = []
+        for burn in request.get_json().get('importedData', []):
+            # Skip rows where the first column is "Location" (assuming it's the header)
+            if burn[0].lower() == "location":
+                continue
+
+            # Validate the row length to prevent index errors
+            if len(burn) < 3:  # Ensure at least location, date, and prop exist
+                continue
+
+            try:
+                burns.append(Burn(
+                    user_id=current_user.id,
+                    location=burn[0],
+                    time=datetime.strptime(burn[1], '%Y-%m-%d'),
+                    prop=burn[2],
+                    notes=burn[3] if len(burn) > 3 and burn[3] != '' else None
+                ))
+            except ValueError:
+                # Skip rows with invalid date formats
+                continue
+
+        # Bulk insert ORM burn objects
+        db.session.bulk_save_objects(burns)
+        db.session.commit()
+        return {'message': 'Import successful!', 'redirect_url': url_for('main.spinner_record_page', spinner_username=current_user.username)}
+    return render_template('import_data.html')
 
 
 @app.route('/sign-out.html')

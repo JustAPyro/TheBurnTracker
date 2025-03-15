@@ -29,9 +29,31 @@
         <a class="nav-link" href={{url_for('main.spinner_logger_page')}}>Log</a>
         <a class="nav-link" href={{url_for('main.spinner_record_page')}}>Records</a>
         <a class="nav-link" href={{url_for('main.spinner_stats_page', spinner_username=current_user.username)}}>Statistics</a>
-        <a class="nav-link" href={{url_for('main.spinner_burns_csv', spinner_username=current_user.username)}}>Export Data</a>
-        <a class="nav-link" href='https://github.com/JustAPyro/TheBurnTracker/issues/new'>Report Bug</a>
-        <a class="nav-link" href={{url_for('main.sign_out_page')}}>Sign out ({{current_user.username}})</a>
+
+        <!-- Account Sub-Menu -->
+        <div class="nav-item dropdown d-none d-md-block">
+          <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Account
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="accountDropdown">
+            <li><a class="nav-link" href={{url_for('main.spinner_burns_csv', spinner_username=current_user.username)}}>Export Data</a></li>
+            <li><a class="nav-link" href={{url_for('main.import_data_page')}}>Import Data</a></li>
+            <li><a class="nav-link" href="">Report Bug</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{{ url_for('main.sign_out_page') }}">Sign out ({{ current_user.username }})</a></li>
+          </ul>
+        </div>
+
+        <!-- Inline Links for Small Screens -->
+        <div class="d-md-none">
+          <span class="nav-link">Account</span>
+          <a class="nav-link ps-3" href="{{ url_for('main.profile_page') }}">Export Data</a>
+          <a class="nav-link ps-3" href="{{ url_for('main.import_data_page') }}">Import Data</a>
+          <a class="nav-link ps-3" href="https://github.com/JustAPyro/TheBurnTracker/issues/new">Report Bug</a>
+          <a class="nav-link ps-3" href={{url_for('main.sign_out_page')}}>Sign out ({{current_user.username}})</a>
+        </div>
+
+        <!-- Links for unauthenticated users, basically just log in and out -->
         {% else %}
         <a class="nav-link" href={{url_for('main.home_page')}}>Home</a>
         <a class="nav-link" href='https://github.com/JustAPyro/TheBurnTracker/issues/new'>Report Bug</a>
