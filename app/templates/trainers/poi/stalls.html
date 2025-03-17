@@ -1,0 +1,73 @@
+{% extends "root.html" %}
+{% block title %}Stall Training{% endblock %}
+{% block content %}
+    <div class="container mt-4">
+        <!-- Explanation Panel -->
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Stall Training Exercise</span>
+                <button class="btn btn-sm btn-outline-secondary">Hide Instructions</button>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    This drill helps poi spinners develop cleaner stalls and transition smoothly between different directions.
+                    Practicing structured stalls improves control and enables seamless movement between planes.
+                    Strong stall control is a foundation for advanced stall sequences and fluid poi technique.
+                </p>
+                <p class="card-text">
+                    Each drill consists of four letters separated by <code>&lt;-&gt;</code>.
+                    The left letter represents the left hand, and the right letter represents the right hand.
+                    The letters indicate which direction each hand should stall before switching to the opposite position.
+                </p>
+                <!-- Centered Reference Table -->
+                <div class="d-flex flex-column align-items-center">
+                    <p class="fw-bold mb-1">Stall Direction Key</p>
+                    <table class="table table-sm table-bordered text-center w-auto mb-3">
+                        <thead class="table-light">
+                            <tr>
+                                <th>F</th>
+                                <th>L</th>
+                                <th>R</th>
+                                <th>U</th>
+                                <th>D</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Front</td>
+                                <td>Left</td>
+                                <td>Right</td>
+                                <td>Up</td>
+                                <td>Down</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Left-Aligned Example Drills -->
+                <div>
+                    <p class="fw-bold mb-1">Examples:</p>
+                    <p class="mb-0">
+                        <code>UD&lt;-&gt;LR</code>
+                    </p>
+                    <small class="text-muted">
+                        Start with your left hand up and right hand down.
+                        Alternate between this and left hand left, right hand right.
+                    </small>
+                    <p class="mb-0 mt-2">
+                        <code>FU&lt;-&gt;DR</code>
+                    </p>
+                    <small class="text-muted">
+                        Start with your left hand stalling forward and right hand up.
+                        Alternate to left hand down and right hand stalling to the right.
+                    </small>
+                </div>
+            </div>
+        </div>
+        <!-- Drill Display Panel -->
+        <div class="card text-center">
+            <div class="card-body bg-primary text-white py-4">
+                <span class="display-3 fw-bold">{{ drill }}</span>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -846,4 +846,5 @@ api.add_resource(BurnResource, '/api/v2/burn/<int:burn_id>.json')
 @app.route('/trainers/poi/stalls')
 def trainer_poi_stalls():
     faces = ('U', 'R', 'L', 'D', 'F', 'B')
-    return random.choice(faces) + random.choice(faces) + '<->' + random.choice(faces) + random.choice(faces)
+    drill = random.choice(faces) + random.choice(faces) + '<->' + random.choice(faces) + random.choice(faces)
+    return render_template('/trainers/poi/stalls.html', drill=drill)
