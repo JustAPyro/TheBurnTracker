@@ -23,6 +23,7 @@ class User(Base, UserMixin):
 
     created_on: Mapped[datetime] = mapped_column(server_default=func.now())
     last_login: Mapped[datetime] = mapped_column(server_default=func.now())
+    last_activity: Mapped[datetime] = mapped_column(server_default=func.now())
 
 
     # --- Profile Information ---

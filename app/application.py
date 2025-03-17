@@ -26,6 +26,15 @@ from app.database import Burn, PasswordReset, User
 
 app = Blueprint('main', __name__)
 
+#-#-#-#-#-#-#-#-#-#- Middleware and request modifications -#-#-#-#-#-#-#-#-#-#
+@app.before_request
+def before_request():
+    if current_user.is_authenticated():
+        current_user.last_activity = datetime.utcnow()
+        db.session.commit()
+
+#-#-#-#-#-#-#-#-#-#- Application routes -#-#-#-#-#-#-#-#-#-#
+
 # For now, no homepage so redirect to sign in
 @app.route('/')
 def home_page():
