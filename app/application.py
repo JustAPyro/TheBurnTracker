@@ -841,3 +841,9 @@ api.add_resource(UnidentifiedBurnResource, '/api/v2/burn.json')
 api.add_resource(BurnResource, '/api/v2/burn/<int:burn_id>.json') 
 
 
+
+#-#-#-#-#-#-#-#-#-#- Trainer Endpoints -#-#-#-#-#-#-#-#-#-#
+@app.route('/trainers/poi/stalls')
+def trainer_poi_stalls():
+    faces = ('U', 'R', 'L', 'D', 'F', 'B')
+    return random.choice(faces) + random.choice(faces) + '<->' + random.choice(faces) + random.choice(faces)
