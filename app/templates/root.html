@@ -28,7 +28,7 @@
         {% if current_user.is_authenticated %}
         <a class="nav-link" href={{url_for('main.spinner_logger_page')}}>Log</a>
         <a class="nav-link" href={{url_for('main.spinner_record_page')}}>Records</a>
-        <a class="nav-link" href={{url_for('main.spinner_stats_page', spinner_username=current_user.username)}}>Statistics</a>
+        <a class="nav-link" href={{url_for('main.spinner_statistics_page')}}>Statistics</a>
 
         <!-- Account Sub-Menu -->
         <div class="nav-item dropdown d-none d-md-block">

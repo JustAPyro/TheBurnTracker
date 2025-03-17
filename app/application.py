@@ -153,7 +153,7 @@ def spinner_record_page():
 
 @app.route('/statistics.html', methods=['GET'])
 @login_required
-def profile_page():
+def spinner_statistics_page():
 
     top_prop = db.session.query(
         Burn.prop,
