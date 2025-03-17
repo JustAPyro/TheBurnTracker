@@ -837,7 +837,7 @@ class UnidentifiedBurnResource(Resource):
     
 
 
-api.add_resource(UnidentifiedBurnResource, '/api/v2/burn.json') 
+api.add_resource(UnidentifiedBurnResource, '/api/v2/burn.json')
 api.add_resource(BurnResource, '/api/v2/burn/<int:burn_id>.json') 
 
 
@@ -846,5 +846,7 @@ api.add_resource(BurnResource, '/api/v2/burn/<int:burn_id>.json')
 @app.route('/trainers/poi/stalls')
 def trainer_poi_stalls():
     faces = ('U', 'R', 'L', 'D', 'F', 'B')
-    drill = random.choice(faces) + random.choice(faces) + '<->' + random.choice(faces) + random.choice(faces)
+    left = random.sample(faces, 2)
+    right = random.sample(faces, 2)
+    drill = left[0] + right[0] + '<->' + left[1] + right[1]
     return render_template('/trainers/poi/stalls.html', drill=drill)
