@@ -18,7 +18,7 @@ from flask import (Blueprint, Flask, abort, flash, make_response, redirect,
 from flask_login import (LoginManager, current_user, login_required,
                          login_user, logout_user)
 from flask_restful import Api, Resource
-from sqlalchemy import asc, desc
+from sqlalchemy import asc, desc, func
 
 from app import db
 from app.communications import Email
@@ -151,10 +151,43 @@ def spinner_record_page():
     return render_template('spinner/records.html')
 
 
-@app.route('/profile.html', methods=['GET'])
+@app.route('/statistics.html', methods=['GET'])
 @login_required
 def profile_page():
-    return redirect(url_for('main.spinner_profile_page', spinner_username=current_user.username))
+
+    top_prop = db.session.query(
+        Burn.prop,
+        func.count(Burn.prop).label('count')
+    ).filter(Burn.user_id == current_user.id
+    ).group_by(Burn.prop
+    ).order_by(func.count(Burn.prop).desc()
+    ).first()[0]
+
+    location_counts = db.session.query(
+        Burn.location,
+        func.count(Burn.location).label('count')
+    ).filter(Burn.user_id == current_user.id).group_by(Burn.location).all()
+    print(location_counts)
+
+    total_burns = db.session.query(Burn).filter(Burn.user_id == current_user.id).count()
+
+    newest_burn = db.session.query(Burn).filter(Burn.user_id == current_user.id).order_by(Burn.time.desc()).first().time.strftime("%b %d, %Y")
+
+    unique_locations = [str(data[0]) for data in db.session.query(Burn.location.distinct().label('location')).filter(Burn.user_id==current_user.id).all()]
+
+
+    locations = []
+
+    return render_template('spinner/statistics.html',
+                           oldest_date=db.session.query(Burn).order_by(Burn.time.asc()).first().time.strftime('%Y-%m-%d'),
+                           today_date=datetime.today().strftime('%Y-%m-%d'),
+                           top_prop=top_prop,
+                           total_burns=total_burns,
+                           newest_burn=newest_burn,
+                           unique_locations=unique_locations,
+                           burns=[burn.as_dict() for burn in current_user.burns],
+                           last_burn=current_user.burns[-1]
+                           )
 
 @app.route('/import-data.html', methods=['GET', 'POST'])
 @login_required

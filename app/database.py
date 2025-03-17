@@ -1,12 +1,14 @@
-from flask_sqlalchemy import SQLAlchemy 
+import hashlib
+from datetime import date, datetime
+from typing import List
+
 from flask_login import UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash 
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Date, ForeignKey, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
-from sqlalchemy import ForeignKey, String, Date
-from datetime import datetime, date
-import hashlib
-from typing import List
+from werkzeug.security import check_password_hash, generate_password_hash
+
 
 class Base(DeclarativeBase):
     pass
@@ -67,7 +69,7 @@ class Burn(Base):
             'id': self.id,
             'user_id': self.user_id,
             'location': self.location,
-            'time': self.time,
+            'time': self.time.isoformat(),
             'prop': self.prop,
             'notes': self.notes,
         }

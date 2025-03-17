@@ -1,0 +1,119 @@
+{% extends "root.html" %}
+{% block title %}Statistics{% endblock %}
+{% block content %}
+    <div class="container mt-4">
+        <!-- Filter Panel (Single Line) -->
+        <!--
+        <div class="card mb-4">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <span>Filter by Date</span>
+                <form class="d-flex align-items-center gap-2 flex-nowrap">
+                    <label for="startDate" class="mb-0 me-2">Start Date:</label>
+                    <input type="date" class="form-control w-auto" id="startDate" value="{{ oldest_date }}" onchange="filterGraphs()">
+                    <label for="endDate" class="mb-0 ms-3 me-2">End Date:</label>
+                    <input type="date" class="form-control w-auto" id="endDate" value="{{ today_date }}" onchange="filterGraphs()">
+                </form>
+            </div>
+        </div>
+        <!-- Stats Panel (Smaller, Minimal Cards) -->
+<div class="row g-3 mb-4">
+<div class="col-md-4">
+<div class="card text-center">
+<div class="card-body py-2">
+<small class="text-muted">Top Prop</small>
+<p class="h4 mb-0">{{ top_prop }}</p>
+</div>
+</div>
+</div>
+<div class="col-md-4">
+<div class="card text-center">
+<div class="card-body py-2">
+<small class="text-muted">Total Burns</small>
+<p class="h4 mb-0">{{ total_burns }}</p>
+</div>
+</div>
+</div>
+<div class="col-md-4">
+<div class="card text-center">
+<div class="card-body py-2">
+<small class="text-muted">Last Burn</small>
+<p class="h4 mb-0">{{ newest_burn }}</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Statistics Charts -->
+<div class="row g-4">
+<div class="col-lg-6">
+<div class="card">
+<div class="card-header d-flex justify-content-between align-items-center">
+<div>Burns by Prop</div>
+<!--
+<select class="form-select form-select-sm w-auto">
+<option selected>Showing Top 5</option>
+{% for i in range(1, 11) %}<option value="{{ i }}">Showing Top {{ i }}</option>{% endfor %}
+</select>
+-->
+</div>
+<div class="card-body">
+<canvas id="prop_chart"></canvas>
+</div>
+</div>
+</div>
+<div class="col-lg-6">
+<div class="card">
+<div class="card-header d-flex justify-content-between align-items-center">
+<div>Burns by Location</div>
+<!--
+<select class="form-select form-select-sm w-auto">
+<option selected>Showing Top 5</option>
+{% for i in range(1, 11) %}<option value="{{ i }}">Showing Top {{ i }}</option>{% endfor %}
+</select>
+          -->
+</div>
+<div class="card-body">
+<canvas id="location_chart"></canvas>
+</div>
+</div>
+</div>
+<div class="col-lg-6">
+<div class="card">
+<div class="card-header">Burns Over Time</div>
+<div class="card-body">
+<canvas id="time_chart"></canvas>
+</div>
+</div>
+</div>
+<div class="col-lg-6">
+<div class="card">
+<div class="card-header">
+<span class="h5">Last Burn</span>
+</div>
+<div class="card-body d-flex flex-wrap">
+<div class="col-6 mb-3">
+<strong>Location:</strong>
+<div id="lastBurnLocation" class="h5 text-primary">{{ last_burn.location }}</div>
+</div>
+<div class="col-6 mb-3">
+<strong>Date:</strong>
+<div id="lastBurnTime" class="h5 text-primary">{{ last_burn.time }}</div>
+</div>
+<div class="col-6 mb-3">
+<strong>Prop:</strong>
+<div id="lastBurnProp" class="h5 text-primary">{{ last_burn.prop }}</div>
+</div>
+<div class="col-6 mb-3">
+<strong>Notes:</strong>
+<div id="lastBurnNotes" class="h5 text-primary">{{ last_burn.notes }}</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>const UNIQUE_LOCATIONS = {{ unique_locations | tojson}};</script>
+<script>const BURNS = {{ burns | tojson }}; console.log(BURNS);</script>
+<script src="{{ url_for('static', filename='js/statistics.js') }}"></script>
+{% endblock %}
