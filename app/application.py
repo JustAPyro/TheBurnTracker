@@ -29,7 +29,7 @@ app = Blueprint('main', __name__)
 #-#-#-#-#-#-#-#-#-#- Middleware and request modifications -#-#-#-#-#-#-#-#-#-#
 @app.before_request
 def before_request():
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         current_user.last_activity = datetime.utcnow()
         db.session.commit()
 
