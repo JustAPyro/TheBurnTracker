@@ -27,6 +27,7 @@ from app.database import Burn, PasswordReset, User
 app = Blueprint('main', __name__)
 
 #-#-#-#-#-#-#-#-#-#- Middleware and request modifications -#-#-#-#-#-#-#-#-#-#
+
 @app.before_request
 def before_request():
     if current_user.is_authenticated:
@@ -103,7 +104,7 @@ def sign_up_page():
 
         if request.args.get('next'):
             return redirect(request.args.get('next'))
-        return redirect(url_for('main.spinner_page', spinner_username=username))
+        return redirect(url_for('main.spinner_logger_page'))
 
     return render_template('auth/sign_up.html')
 
@@ -163,6 +164,8 @@ def spinner_record_page():
 @app.route('/statistics.html', methods=['GET'])
 @login_required
 def spinner_statistics_page():
+    if not current_user.burns:
+        return 'no burns'
 
     top_prop = db.session.query(
         Burn.prop,
@@ -425,6 +428,9 @@ def spinner_stats_page(spinner_username):
                            prop_counts_over_time=prop_counts_over_time,
                            all_dates=dates)
 
+@app.route('/simulate')
+def simulate_page():
+    return render_template('simulate.html')
 
 @app.route('/burns/<burn_id>.html', methods=['DELETE'])
 @login_required
